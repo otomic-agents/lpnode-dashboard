@@ -1,0 +1,195 @@
+<template>
+  <PageWrapper :class="prefixCls" title="Programs">
+    <template #headerContent>
+      <div :class="`${prefixCls}__link`">
+        <a><Icon icon="bx:bx-paper-plane" color="#1890ff" /><span>install</span></a>
+        <a><Icon icon="carbon:warning" color="#1890ff" /><span>refresh status</span></a>
+      </div>
+    </template>
+
+    <div :class="`${prefixCls}__content`">
+      <a-list>
+        <a-row :gutter="16">
+          <template v-for="item in pageList" :key="item.title">
+            <a-col :span="6">
+              <a-list-item>
+                <a-card :hoverable="true" :class="`${prefixCls}__card`" @click="showInfo(item)">
+                  <div :class="`${prefixCls}__card-title`">
+                    <Icon class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" />
+                    
+                    {{ item.title }}
+                    
+                  </div>
+                  
+                  <div :class="`${prefixCls}__card-detail`">
+                     {{ item.name }}
+                  </div>
+                  <div :class="`${prefixCls}__card-detail`">
+                    {{ item.clientInfo.deployment.image }}
+                  </div>
+                </a-card>
+              </a-list-item>
+            </a-col>
+          </template>
+        </a-row>
+      </a-list>
+    </div>
+    <Info @register="register" :data="choosed"/>
+  </PageWrapper>
+</template>
+<script lang="ts">
+  import { defineComponent, ref } from 'vue';
+  import Icon from '/@/components/Icon/index';
+  import { cardList } from './data';
+  import { PageWrapper } from '/@/components/Page';
+  import { Card, Row, Col, List } from 'ant-design-vue';
+  import { list } from '/@/api/lpnode/base';
+  import { ListModel } from '/@/api/lpnode/model/baseModel';
+  import { listResource } from '/@/api/lpnode/amm';
+  import { ListResourceModel } from '/@/api/lpnode/model/ammModel';
+  import { useDrawer } from '/@/components/Drawer';
+  import Info from './info.vue';
+
+  export default defineComponent({
+    components: {
+      Icon,
+      PageWrapper,
+      [Card.name]: Card,
+      [List.name]: List,
+      [List.Item.name]: List.Item,
+      [Row.name]: Row,
+      [Col.name]: Col,
+      Info
+    },
+    setup() {
+
+      const choosed = ref(undefined)
+      const pageList = ref([])
+      const [register, { openDrawer: openInfo }] = useDrawer();
+      const showInfo = (data) => {
+        // clientInfo.value = data
+        choosed.value = data
+        openInfo(true)
+      }
+
+      let fetchList = async () => {
+        let ammResp: ListModel = await list({
+          installType: 'amm'
+        })
+        console.log('ammResp:')
+        console.log(ammResp)
+
+        let marketResp: ListModel = await list({
+          installType: 'market'
+        })
+        console.log('marketResp:')
+        console.log(marketResp)
+
+        let ammRes: ListResourceModel = await listResource({})
+        console.log('ammRes:')
+        console.log(ammRes)
+
+        let newList = []
+        if(ammResp) {
+          ammResp.forEach(element => {
+            let iconName = 'ri:mini-program-line';
+            let clientInfo = JSON.parse(element.installContext)     
+
+            let aR = undefined
+            if(ammRes != undefined) {
+              ammRes.forEach(resElement => {
+                if (resElement.appName == element.name) {
+                  aR = resElement
+                }
+              });
+
+            }
+            
+            newList.push({
+              title: `AMM Program` ,
+              icon: iconName,
+              color: '#1890ff',
+              clientInfo,
+              name: element.name,
+              installType: element.installType,
+              res: aR
+            })
+          });
+        }
+        
+        if(marketResp) {
+          marketResp.forEach(element => {
+            let iconName = 'ri:mini-program-fill';
+            let clientInfo = JSON.parse(element.installContext)     
+
+            newList.push({
+              title: `Index Program` ,
+              icon: iconName,
+              color: '#1890ff',
+              clientInfo,
+              name: element.name,
+              installType: element.installType
+            })
+          });
+        }
+
+
+        pageList.value = newList
+      }
+      fetchList()
+
+      return {
+        prefixCls: 'list-card',
+        pageList,
+        register,
+        showInfo,
+        choosed
+      };
+    },
+  });
+</script>
+<style lang="less" scoped>
+  .list-card {
+    &__link {
+      margin-top: 10px;
+      font-size: 14px;
+
+      a {
+        margin-right: 30px;
+      }
+
+      span {
+        margin-left: 5px;
+      }
+    }
+
+    &__card {
+      width: 100%;
+      margin-bottom: -8px;
+
+      .ant-card-body {
+        padding: 16px;
+      }
+
+      &-title {
+        margin-bottom: 5px;
+        font-size: 16px;
+        font-weight: 500;
+        color: @text-color;
+
+        .icon {
+          margin-top: -5px;
+          margin-right: 10px;
+          font-size: 38px !important;
+        }
+      }
+
+      &-detail {
+        padding-top: 10px;
+        padding-left: 30px;
+        font-size: 14px;
+        color: @text-color-secondary;
+      }
+    }
+  }
+</style>
