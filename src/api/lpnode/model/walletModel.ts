@@ -32,3 +32,17 @@ export interface DeleteModel {
     data: number;
     message: string;
 }
+
+export interface VaultWalletInfo {
+    address: string;
+    hostType: string;
+    id: string;
+    name: string;
+    secertType: string
+}
+
+export interface VaultListParams {
+
+}
+
+export type VaultListModel = Array<VaultWalletInfo>

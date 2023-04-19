@@ -18,6 +18,45 @@ export const chainSchema = {
   },
 }
 
+export const step2SchemaKeyAddress = {
+  field: 'address',
+  component: 'Input',
+  label: 'Wallet Address',
+  required: true,
+  defaultValue: '',
+  colProps: {
+    span: 24,
+  },
+  labelWidth: 230
+}
+
+export const step2SchemaKeyPrivate = {
+  field: 'private_key',
+  component: 'Input',
+  label: 'Private Key',
+  required: true,
+  defaultValue: '',
+  colProps: {
+    span: 24,
+  },
+  labelWidth: 230
+}
+
+export const step2SchemaVaultIds = {
+  field: 'vaultid',
+  component: 'Select',
+  label: 'Wallet Address',
+  required: true,
+  defaultValue: '',
+  componentProps: {
+    options: [],
+  },
+  colProps: {
+    span: 24,
+  },
+  labelWidth: 230
+}
+
 export const step2Schemas: FormSchema[] = [
   {
     field: 'wallet_name',
@@ -31,27 +70,28 @@ export const step2Schemas: FormSchema[] = [
     labelWidth: 230
   },
   {
-    field: 'address',
-    component: 'Input',
-    label: 'Wallet Address',
+    field: 'type',
+    component: 'Select',
+    label: 'Type',
     required: true,
-    defaultValue: '',
+    defaultValue: 'key',
+    componentProps: {
+      options: [
+        {
+          label: 'PrivateKey',
+          value: 'key'
+        },
+        {
+          label: 'Vault',
+          value: 'vault'
+        }
+      ],
+    },
     colProps: {
       span: 24,
     },
     labelWidth: 230
-  },
-  {
-    field: 'private_key',
-    component: 'Input',
-    label: 'Private Key',
-    required: true,
-    defaultValue: '',
-    colProps: {
-      span: 24,
-    },
-    labelWidth: 230
-  },
+  }
 ];
 
 export const step2SchemasNear: FormSchema[] = [
