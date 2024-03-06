@@ -19,6 +19,7 @@
       />
       <Step3 v-show="current === 1" @redo="handleRedo" v-if="initSetp3" />
     </div>
+    <Loading :loading="isLoading" />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -30,10 +31,16 @@
   import { register } from '/@/api/lpnode/account';
   import { getChainID, getChainType } from '/@/obridge/utils'
   import { createBridge } from '/@/api/lpnode/bridge'
+  import { Loading } from '/@/components/Loading/index';
+  import { useTabs } from '/@/hooks/web/useTabs';
+  import { restart } from '/@/api/lpnode/base';
+import { ListResourceModel } from '/@/api/lpnode/model/ammModel';
+import { edit, listResource } from '/@/api/lpnode/amm';
 
   export default defineComponent({
     name: 'FormStepPage',
     components: {
+      Loading,
       Step2,
       Step3,
       PageWrapper,
@@ -41,6 +48,8 @@
       [Steps.Step.name]: Steps.Step,
     },
     setup() {
+      const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
+      const isLoading = ref(false)
       const current = ref(0);
 
       const state = reactive({
@@ -52,6 +61,7 @@
       }
 
       async function handleStep2Next(step2Values: any) {
+        isLoading.value = true
         console.log('step2Values')
         console.log(step2Values)
         let params = {
@@ -63,17 +73,41 @@
           "walletId": step2Values.dst_wallet,
           "srcWalletId": step2Values.src_wallet,
           // "receiveAddress": step2Values.src_wallet,
-          "ammName": step2Values.amm
+          "ammName": step2Values.amm,
+          "enableLimiter": step2Values.enable_limiter
         }
 
-        let resp = await createBridge(params)
-        console.log('resp:')
-        console.log(resp)
+        try {
+          let resp = await createBridge(params)
+          console.log('resp:')
+          console.log(resp)
 
-        if(resp != undefined) {
-          current.value++
-          state.initSetp3 = true;
+          if(resp != undefined) {
+            current.value++
+            state.initSetp3 = true;
+          }
+        } catch (error) {
+          console.log('error', error)
         }
+
+        try {
+          let resp = await restart({})
+          console.log('resp:')
+          console.log(resp)
+        } catch (error) {
+          console.log('error', error)
+        }
+
+        let ammRes: ListResourceModel = await listResource({})
+        if (ammRes.length > 0) {
+          ammRes[0].templateResult = ammRes[0].templateResult ? ammRes[0].templateResult : ammRes[0].template
+          let resp = await edit(ammRes[0])
+          console.log('resp:')
+          console.log(resp)
+        }
+
+        isLoading.value = false
+        refreshPage()
       }
 
       function handleRedo() {
@@ -83,6 +117,7 @@
 
       return {
         current,
+        isLoading,
         handleStep2Next,
         handleRedo,
         handleStepPrev,

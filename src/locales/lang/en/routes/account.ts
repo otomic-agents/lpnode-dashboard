@@ -5,6 +5,9 @@ export default {
     },
     register: {
         title: "Register"
+    },
+    limiter: {
+        title: "AuthenticationLimiter"
     }
 
   };

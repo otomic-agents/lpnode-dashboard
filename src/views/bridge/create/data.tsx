@@ -27,6 +27,21 @@ export const step2Schemas: FormSchema[] = [
     },
     labelWidth: 120
   },
+  {
+    field: 'enable_limiter',
+    component: 'Switch',
+    label: 'Open AuthenticationLimiter',
+    required: true,
+    defaultValue: true,
+    componentProps: {
+      options: [
+      ],
+    },
+    colProps: {
+      span: 24,
+    },
+    labelWidth: 120,
+  },
 ];
 
 export const step2SchemasSrc: FormSchema[] = [

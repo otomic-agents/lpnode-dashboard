@@ -36,6 +36,7 @@
         </a-row>
       </a-list>
     </div>
+    <Loading :loading="isLoading" />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -47,9 +48,12 @@
   import { WalletInfo, DeleteParams } from '/@/api/lpnode/model/walletModel';
   import { getChainName } from '/@/obridge/utils';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import { Loading } from '/@/components/Loading/index';
+  import { useTabs } from '/@/hooks/web/useTabs';
 
   export default defineComponent({
     components: {
+      Loading,
       Icon,
       PageWrapper,
       [Card.name]: Card,
@@ -61,6 +65,13 @@
     setup() {
 
       const { createMessage } = useMessage();
+      const isLoading = ref(false);
+      const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
+      // const loadingProps = computed(() => {
+      //   console.log('on loadingProps')
+      //   return 
+      // });
+      // const { getLoading, setLoading } = useLoading(loadingProps);
 
       const pageList = ref([])
 
@@ -86,6 +97,8 @@
       fetchList()
 
       const deleteWalletFn = async (wallet) => {
+        // setLoading(true)
+        isLoading.value = true
         let params: DeleteParams = {
           id: wallet.id
         }
@@ -94,9 +107,14 @@
         if(resp != undefined) {
           createMessage.success('Delete wallet succeed')
         }
+        // setLoading(false)
+        isLoading.value = false
+        refreshPage()
       }
 
       return {
+        // loading,
+        isLoading,
         prefixCls: 'list-card',
         list: pageList,
         deleteWalletFn

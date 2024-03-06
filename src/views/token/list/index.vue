@@ -50,6 +50,7 @@
         </template>
       </a-list>
     </div>
+    <Loading :loading="isLoading" />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -65,9 +66,12 @@
   import { deleteToken } from '/@/api/lpnode/token';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { getChainName } from '/@/obridge/utils';
+  import { Loading } from '/@/components/Loading/index';
+  import { useTabs } from '/@/hooks/web/useTabs';
 
   export default defineComponent({
     components: {
+      Loading,
       Icon,
       Tag,
       BasicForm,
@@ -80,10 +84,12 @@
 
       const { createMessage } = useMessage();
       const searchList: any = ref([])
-
+      const isLoading = ref(false);
+      const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
 
 
       const deleteFn = async (item) => {
+        isLoading.value = true
         console.log('deleteFn:')
         console.log(item)
 
@@ -96,6 +102,53 @@
           createMessage.success('Delete token succeed')
         }
 
+        isLoading.value = false
+        refreshPage()
+      }
+
+      const isTestToken = (chainId: number, address: string) => {
+        if (chainId == 60) {
+          if (
+            address == '0xFC0894Eb1ea1876ddC183578F37AFe64bFFAdBd0' || 
+            address == '0x30DfEC4d5Cd6f819492A04c34E20f5F15171e934' || 
+            address == '0x1016A0886b4AeD69043367d501a99cfBAaB052B5'
+          ) {
+            
+            return true
+          } else {
+            return false
+          }
+        }
+
+        if (chainId == 966) {
+          if (
+            address == '0x25B28e17e75F44fF2275F2ba8923ce69CECa73D8' ||
+            address == '0x7e36F06Ee6D27b123e8A1fDCBa27F04b56eFb1d5' ||
+            address == '0xD511B82FC31eCcDeFBe558552d9fe8b7a4e932b6'
+          ) {
+            return true
+          } else {
+            return false
+          }
+        }
+
+        if (chainId == 9000) {
+          if (
+            address == '0x43e2F9124Ec363A71193bD4fFB1ae6D608185147' ||
+            address == '0x0A327833232Ec4c88DbFa0ae6E44b31D6956088e' ||
+            address == '0xB526be0B8AeD308892160914B0F25f60Ad3678D7'
+          ) {
+            return true
+          } else {
+            return false
+          }
+        }
+
+        return false
+      }
+
+      const faucetFn = async (item) => {
+
       }
 
       const fetch = async () => {
@@ -105,7 +158,7 @@
 
         let newList = []
         resp.forEach(item => {
-          newList.push({
+          const itemData = {
             id: item._id,
             title: item.tokenName,
             description: [item.chainId, getChainName(item.chainId), item.marketName],
@@ -118,7 +171,18 @@
                 fn: deleteFn
               }
             ]
-          })
+          }
+
+          if (isTestToken(item.chainId, item.address)) {
+            itemData.actions.push({
+              icon: 'material-symbols:faucet',
+              text: 'faucet',
+              color: '#018ffb',
+              fn: faucetFn
+            })
+          }
+
+          newList.push(itemData)
         })
 
         searchList.value = newList
@@ -127,6 +191,7 @@
 
 
       return {
+        isLoading,
         prefixCls: 'list-search',
         list: searchList,
         actions,

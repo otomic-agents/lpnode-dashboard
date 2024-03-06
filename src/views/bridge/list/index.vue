@@ -115,7 +115,7 @@
       }
 
       const restartFn = async () => {
-        let resp = await restart()
+        let resp = await restart({})
         console.log('resp:')
         console.log(resp)
       }

@@ -134,7 +134,7 @@
 
           setProps({
             submitButtonOptions: {
-              loading: true,
+              loading: false,
             },
           });
           setTimeout(() => {
@@ -144,7 +144,7 @@
               },
             });
             emit('next', values);
-          }, 1500);
+          }, 1);
         } catch (error) {}
       }
 

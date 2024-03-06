@@ -29,10 +29,13 @@
   import { Steps } from 'ant-design-vue';
   import { register } from '/@/api/lpnode/account';
   import { getChainID, getChainType } from '/@/obridge/utils'
+  import { Loading } from '/@/components/Loading/index';
+  import { useTabs } from '/@/hooks/web/useTabs';
 
   export default defineComponent({
     name: 'FormStepPage',
     components: {
+      Loading,
       Step2,
       Step3,
       PageWrapper,
@@ -41,6 +44,8 @@
     },
     setup() {
       const current = ref(0);
+      const isLoading = ref(false);
+      const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
 
       const state = reactive({
         initSetp3: false,
@@ -51,9 +56,10 @@
       }
 
       async function handleStep2Next(step2Values: any) {
+        isLoading.value = true
         let params: any = {
 
-          name: step2Values.name,
+          // name: step2Values.name,
           profile: step2Values.profile
         }
 
@@ -62,6 +68,9 @@
           current.value++;
           state.initSetp3 = true;
         }
+
+        isLoading.value = false
+        refreshPage()
       }
 
       function handleRedo() {
@@ -70,6 +79,7 @@
       }
 
       return {
+        isLoading,
         current,
         handleStep2Next,
         handleRedo,

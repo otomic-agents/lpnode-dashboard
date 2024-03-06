@@ -22,14 +22,14 @@ const client: AppRouteModule = {
               title: t('routes.amm.list.title'),
             },
           },
-          {
-            path: 'install',
-            name: 'AmmInstall',
-            component: () => import('/@/views/amm/install/index.vue'),
-            meta: {
-              title: t('routes.amm.install.title'),
-            },
-          },
+          // {
+          //   path: 'install',
+          //   name: 'AmmInstall',
+          //   component: () => import('/@/views/amm/install/index.vue'),
+          //   meta: {
+          //     title: t('routes.amm.install.title'),
+          //   },
+          // },
     ]
 };
 

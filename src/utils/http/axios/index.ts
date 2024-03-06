@@ -59,6 +59,7 @@ const transform: AxiosTransform = {
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
     if (hasSuccess) {
+      console.log('hit hasSuccess')
       let successMsg = message;
 
       if (isNull(successMsg) || isUnDef(successMsg) || isEmpty(successMsg)) {
@@ -289,7 +290,7 @@ export const defHttp = createAxios();
 // });
 export const lpHttp = createAxios({
   requestOptions: {
-    // apiUrl: 'https://lpnode.sai030.snowinning.com',
+    // apiUrl: 'https://48fcf1da.jksdgb.snowinning.com',
     apiUrl: `https://${window.location.host}`,
     urlPrefix: '',
   },

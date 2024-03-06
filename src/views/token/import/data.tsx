@@ -29,6 +29,7 @@ export const step2Schemas: FormSchema[] = [
       span: 24,
     },
     labelWidth: 230
+    // ,defaultValue: "aaa"
   },
 
   {

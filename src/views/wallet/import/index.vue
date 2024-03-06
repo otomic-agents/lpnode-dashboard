@@ -23,6 +23,7 @@
       />
       <Step3 v-show="current === 2" @redo="handleRedo" v-if="initSetp3" />
     </div>
+    <Loading :loading="isLoading" />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -34,10 +35,13 @@
   import { Steps } from 'ant-design-vue';
   import { createWallet } from '/@/api/lpnode/wallet';
   import { getChainID, getChainType } from '/@/obridge/utils'
+  import { Loading } from '/@/components/Loading/index';
+  import { useTabs } from '/@/hooks/web/useTabs';
 
   export default defineComponent({
     name: 'FormStepPage',
     components: {
+      Loading,
       Step1,
       Step2,
       Step3,
@@ -47,6 +51,8 @@
     },
     setup() {
       const current = ref(0);
+      const isLoading = ref(false);
+      const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
 
       const data = reactive({
         chain: ''
@@ -69,29 +75,32 @@
       }
 
       async function handleStep2Next(step2Values: any) {
+
+        isLoading.value = true
+
         let params: any = {
           "walletName": step2Values.wallet_name,
 	        "chainType": getChainType(data.chain.toLowerCase()),
 	        "chainId": getChainID(data.chain.toLowerCase())
         }
 
-        if(step2Values.type == 'key') {
+        // if(step2Values.type == 'key') {
           Object.assign(params, {
             "privateKey": step2Values.private_key,
             "address": step2Values.address == undefined ? step2Values.account_id : step2Values.address,
             "accountId": step2Values.account_id,
             "walletType": "privateKey"
           })
-        }
-        else
-        if(step2Values.type == 'vault') {
-          Object.assign(params, {
-            "storeId": step2Values.vaultid,
-            "walletType": "storeId",
-            // "privateKey": "",
-            // "address": ""
-          })
-        }
+        // }
+        // else
+        // if(step2Values.type == 'vault') {
+        //   Object.assign(params, {
+        //     "storeId": step2Values.vaultid,
+        //     "walletType": "storeId",
+        //     // "privateKey": "",
+        //     // "address": ""
+        //   })
+        // }
 
 
         let resp = await createWallet(params);
@@ -99,6 +108,9 @@
           current.value++;
           state.initSetp3 = true;
         }
+
+        isLoading.value = false
+        refreshPage()
       }
 
       function handleRedo() {
@@ -110,6 +122,7 @@
       return {
         data,
         current,
+        isLoading,
         handleStep1Next,
         handleStep2Next,
         handleRedo,

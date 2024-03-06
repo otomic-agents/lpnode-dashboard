@@ -22,14 +22,14 @@ const client: AppRouteModule = {
               title: t('routes.chainclient.list.title'),
             },
           },
-          {
-            path: 'install',
-            name: 'ChainClientInstall',
-            component: () => import('/@/views/client/install/index.vue'),
-            meta: {
-              title: t('routes.chainclient.install.title'),
-            },
-          },
+          // {
+          //   path: 'install',
+          //   name: 'ChainClientInstall',
+          //   component: () => import('/@/views/client/install/index.vue'),
+          //   meta: {
+          //     title: t('routes.chainclient.install.title'),
+          //   },
+          // },
     ]
 };
 

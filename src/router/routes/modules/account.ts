@@ -30,6 +30,14 @@ const client: AppRouteModule = {
               title: t('routes.account.register.title'),
             },
           },
+          {
+            path: 'limiter',
+            name: 'AuthenticationLimiter',
+            component: () => import('/@/views/account/limiter/index.vue'),
+            meta: {
+              title: t('routes.account.limiter.title'),
+            },
+          },
     ]
 };
 

@@ -7,6 +7,7 @@
         <a><Icon icon="carbon:warning" color="#1890ff" /><span>info</span></a>
         <a><Icon icon="ion:document-text-outline" color="#1890ff" /><span>doc</span></a>
       </div> -->
+      <a-button type="primary" @click="onRefreshAddress"> Refresh authentication address </a-button> 
     </template>
 
     <div :class="`${prefixCls}__content`">
@@ -39,6 +40,7 @@
         </a-row>
       </a-list>
     </div>
+    <Loading :loading="isLoading" />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -46,13 +48,15 @@
   import Icon from '/@/components/Icon/index';
   import { PageWrapper } from '/@/components/Page';
   import { Card, Row, Col, List } from 'ant-design-vue';
-  import { list } from '/@/api/lpnode/account';
+  import { list, updateLpWallet } from '/@/api/lpnode/account';
   import { AccountInfo } from '/@/api/lpnode/model/accountModel';
   import { getChainName } from '/@/obridge/utils';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import { Loading } from '/@/components/Loading/index';
 
   export default defineComponent({
     components: {
+      Loading,
       Icon,
       PageWrapper,
       [Card.name]: Card,
@@ -62,7 +66,7 @@
       [Col.name]: Col,
     },
     setup() {
-
+      const isLoading = ref(false);
       const { createMessage } = useMessage();
 
       const pageList = ref([])
@@ -88,10 +92,19 @@
       }
       fetchList()
 
+      const onRefreshAddress = async () => {
+        isLoading.value = true
+        let resp = await updateLpWallet({})
+        console.log('resp', resp)
+        isLoading.value = false
+      }
+
 
       return {
         prefixCls: 'list-card',
-        list: pageList
+        list: pageList,
+        onRefreshAddress,
+        isLoading
       };
     },
   });

@@ -8,6 +8,10 @@ export const getChainID = (chain) => {
           return 144
         case 'near':
           return 397
+        case 'eth':
+          return 60;
+        case 'polygon':
+          return 966
         default:
           break;
       }
@@ -18,6 +22,10 @@ export const getChainType = (chain) => {
         case 'bsc':
           return 'evm'
         case 'avax':
+          return 'evm'
+        case 'eth':
+          return 'evm'
+        case 'polygon':
           return 'evm'
         case 'xrp':
           return 'xrp'
@@ -38,6 +46,10 @@ export const getChainName = (chainId) => {
       return 'xrp'
     case 397:
       return 'near'
+    case 60:
+      return 'eth'
+    case 966:
+      return 'polygon'
     default:
       break;
   }

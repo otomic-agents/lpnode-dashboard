@@ -23,6 +23,7 @@
       />
       <Step3 v-show="current === 2" @redo="handleRedo" v-if="initSetp3" />
     </div>
+    <Loading :loading="isLoading" />
   </PageWrapper>
 </template>
 <script lang="ts">
@@ -34,10 +35,13 @@
   import { Steps } from 'ant-design-vue';
   import { createToken } from '/@/api/lpnode/token';
   import { getChainID } from '/@/obridge/utils'
+  import { Loading } from '/@/components/Loading/index';
+  import { useTabs } from '/@/hooks/web/useTabs';
 
   export default defineComponent({
     name: 'FormStepPage',
     components: {
+      Loading,
       Step1,
       Step2,
       Step3,
@@ -45,11 +49,18 @@
       [Steps.name]: Steps,
       [Steps.Step.name]: Steps.Step,
     },
-    setup() {
+    props: {
+      ctx: { type: Object}
+    },
+    setup(props) {
+      const isLoading = ref(false);
       const current = ref(0);
-      
+      const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
+
+      console.log('token def data', props.ctx)
       const data = reactive({
-        chain: ''
+        chain: '',
+        defaultData: props.ctx ? props.ctx.defaultData : undefined
       })
 
       const state = reactive({
@@ -69,7 +80,7 @@
       }
 
       async function handleStep2Next(step2Values: any) {
-
+        isLoading.value = true
         let params: any = {
           address: step2Values.address,
           tokenName: step2Values.token_name,
@@ -88,7 +99,8 @@
           current.value++;
           state.initSetp3 = true;
         }
-
+        isLoading.value = false
+        refreshPage()
       }
 
       function handleRedo() {
@@ -100,6 +112,7 @@
       return {
         data,
         current,
+        isLoading,
         handleStep1Next,
         handleStep2Next,
         handleRedo,
