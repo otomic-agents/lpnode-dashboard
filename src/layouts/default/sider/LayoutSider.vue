@@ -103,8 +103,6 @@
         };
       });
 
-      // 在此处使用计算量可能会导致sider异常
-      // andv 更新后，如果trigger插槽可用，则此处代码可废弃
       const getTrigger = h(LayoutTrigger);
 
       return {

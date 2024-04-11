@@ -9,10 +9,10 @@ import {
 export default {
   renderEdit: createEditRender(),
   renderCell: createCellRender(getDatePickerCellValue, () => {
-    return ['YYYY-WW周'];
+    return ['YYYY-WWweek'];
   }),
   renderItemContent: createFormItemRender(),
   exportMethod: createExportMethod(getDatePickerCellValue, () => {
-    return ['YYYY-WW周'];
+    return ['YYYY-WWweek'];
   }),
 };

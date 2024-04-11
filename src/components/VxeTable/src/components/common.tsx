@@ -9,12 +9,9 @@ import { componentMap } from '../componentMap';
 import { ComponentType } from '../componentType';
 import { createPlaceholderMessage } from '../helper';
 
-/**
- * @description: 获取组件
- */
 export function getComponent(componentName) {
   const Component = componentMap.get(componentName as ComponentType);
-  if (!Component) throw `您还没注册此组件 ${componentName}`;
+  if (!Component) throw `You haven't registered this component yet ${componentName}`;
   return Component as ComponentOptions;
 }
 
@@ -30,16 +27,10 @@ export function cellText(cellValue: any): string[] {
   return [formatText(cellValue)];
 }
 
-/**
- * @description: 方法名转换
- */
 export function getOnName(type: string) {
   return 'on' + type.substring(0, 1).toLocaleUpperCase() + type.substring(1);
 }
 
-/**
- * @description: 获取组件传值所接受的属性
- */
 function getModelKey(renderOpts: VxeGlobalRendererHandles.RenderOptions) {
   let prop = 'value';
   switch (renderOpts.name) {
@@ -50,9 +41,6 @@ function getModelKey(renderOpts: VxeGlobalRendererHandles.RenderOptions) {
   return prop;
 }
 
-/**
- * @description: 回去双向更新的方法
- */
 function getModelEvent(renderOpts: VxeGlobalRendererHandles.RenderOptions) {
   let type = 'update:value';
   switch (renderOpts.name) {
@@ -63,12 +51,6 @@ function getModelEvent(renderOpts: VxeGlobalRendererHandles.RenderOptions) {
   return type;
 }
 
-/**
- * @description: chang值改变方法
- * @param {}
- * @return {*}
- * @author: *
- */
 function getChangeEvent() {
   return 'change';
 }
@@ -76,12 +58,7 @@ function getChangeEvent() {
 function getClickEvent() {
   return 'click';
 }
-/**
- * @description: 获取方法
- * @param {}
- * @return {*}
- * @author: *
- */
+
 export function createEvents(
   renderOpts: VxeGlobalRendererHandles.RenderOptions,
   params: VxeGlobalRendererHandles.RenderParams,
@@ -131,9 +108,6 @@ export function createEvents(
   return ons;
 }
 
-/**
- * @description: 获取属性
- */
 export function createProps(
   renderOpts: VxeGlobalRendererHandles.RenderOptions,
   value: any,
@@ -153,9 +127,6 @@ export function createProps(
   );
 }
 
-/**
- * @description: 创建单元格默认显示内容
- */
 export function createDefaultRender(
   defaultProps?: { [key: string]: any },
   callBack?: (
@@ -189,9 +160,6 @@ export function createDefaultRender(
   };
 }
 
-/**
- * @description: 创建编辑单元格
- */
 export function createEditRender(
   defaultProps?: { [key: string]: any },
   callBack?: (
@@ -225,9 +193,6 @@ export function createEditRender(
   };
 }
 
-/**
- * @description: 创建筛选渲染内容
- */
 export function createFilterRender(
   defaultProps?: { [key: string]: any },
   callBack?: (
@@ -263,11 +228,11 @@ export function createFilterRender(
               renderOpts,
               params,
               (value: any) => {
-                // 处理 model 值双向绑定
+
                 option.data = value;
               },
               () => {
-                // 处理 change 事件相关逻辑
+
                 const { $panel } = params;
                 $panel.changeOption(null, checked, option);
               },
@@ -279,13 +244,6 @@ export function createFilterRender(
   };
 }
 
-/**
- * @description: 默认过滤
- * @param {}
- * @return {*}
- * @author: *
- */
-
 export function createDefaultFilterRender() {
   return function (params: VxeGlobalRendererHandles.FilterMethodParams) {
     const { option, row, column } = params;
@@ -295,9 +253,6 @@ export function createDefaultFilterRender() {
   };
 }
 
-/**
- * @description: 创建 form表单渲染
- */
 export function createFormItemRender(
   defaultProps?: { [key: string]: any },
   callBack?: (
@@ -322,11 +277,11 @@ export function createFormItemRender(
           renderOpts,
           params,
           (value: any) => {
-            // 处理 model 值双向绑定
+
             XEUtils.set(data, property, value);
           },
           () => {
-            // 处理 change 事件相关逻辑
+
             $form.updateStatus({
               ...params,
               field: property,
@@ -338,9 +293,6 @@ export function createFormItemRender(
   };
 }
 
-/**
- * @description: cell渲染
- */
 export function createCellRender(
   getSelectCellValue: Function,
   callBack?: (
@@ -378,12 +330,6 @@ export function createCellRender(
   };
 }
 
-/**
- * @description: 创建 导出渲染
- * @param {}
- * @return {*}
- * @author: *
- */
 export function createExportMethod(
   getExportCellValue: Function,
   callBack?: (params: VxeGlobalRendererHandles.ExportMethodParams) => Array<any>,
@@ -397,9 +343,6 @@ export function createExportMethod(
   };
 }
 
-/**
- * @description: 创建单元格默认显示内容
- */
 export function createToolbarToolRender(
   defaultProps?: { [key: string]: any },
   callBack?: (

@@ -81,7 +81,6 @@
   import { useMessage } from '/@/hooks/web/useMessage';
   import svgIcons from 'virtual:svg-icons-names';
 
-  // 没有使用别名引入，是因为WebStorm当前版本还不能正确识别，会报unused警告
   const AInput = Input;
   const APopover = Popover;
   const APagination = Pagination;

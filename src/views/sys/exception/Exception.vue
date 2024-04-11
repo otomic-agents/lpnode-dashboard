@@ -23,7 +23,7 @@
   export default defineComponent({
     name: 'ErrorPage',
     props: {
-      // 状态码
+
       status: {
         type: Number as PropType<number>,
         default: ExceptionEnum.PAGE_NOT_FOUND,

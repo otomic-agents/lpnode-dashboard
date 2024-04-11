@@ -60,7 +60,7 @@
         type: Object as PropType<Recordable>,
         default: () => ({}),
       },
-      // 是否有下级，默认是
+
       isLeaf: {
         type: Function as PropType<(arg: Recordable) => boolean>,
         default: null,

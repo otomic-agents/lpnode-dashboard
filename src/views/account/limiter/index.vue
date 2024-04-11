@@ -65,7 +65,7 @@ export default defineComponent({
             const v = await validate()
             console.log('validate', v)
             console.log('onChange blacklist', e)
-            if (v.isblack && v.state) {
+            if (v.isblack) {
                 blackList.value.push(e)
             }
             
@@ -75,7 +75,7 @@ export default defineComponent({
             const v = await validate()
             console.log('validate', v)
             console.log('onChange whitelist', e)
-            if (!v.isblack && v.state) {
+            if (!v.isblack) {
                 whiteList.value.push(e)
             }
             
@@ -113,7 +113,7 @@ export default defineComponent({
                     country_black_list: blackList.value.join(','),
                     min_age: '18',
                     account_black_list: '',
-                    state: v.state == true ? 'on' : 'off'
+                    // state: v.state == true ? 'on' : 'off'
                 })
             })
 

@@ -64,7 +64,6 @@ export function useFormEvents({
       .map((item) => item.field)
       .filter(Boolean);
 
-    // key 支持 a.b.c 的嵌套写法
     const delimiter = '.';
     const nestKeyArray = fields.filter((item) => item.indexOf(delimiter) >= 0);
 

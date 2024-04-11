@@ -324,7 +324,7 @@
               );
             },
           });
-          // 记录原始order 序列
+
           sortableOrder = sortable.toArray();
           inited = true;
         });

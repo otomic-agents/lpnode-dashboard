@@ -25,7 +25,7 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  // logo 底色
+
   canvasRoundRect(ctx)(logoBgXY, logoBgXY, logoBgWidth, logoBgWidth, borderRadius);
   ctx.fillStyle = bgColor;
   ctx.fill();
@@ -37,12 +37,10 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
   }
   image.src = logoSrc;
 
-  // 使用image绘制可以避免某些跨域情况
   const drawLogoWithImage = (image: CanvasImageSource) => {
     ctx.drawImage(image, logoXY, logoXY, logoWidth, logoWidth);
   };
 
-  // 使用canvas绘制以获得更多的功能
   const drawLogoWithCanvas = (image: HTMLImageElement) => {
     const canvasImage = document.createElement('canvas');
     canvasImage.width = logoXY + logoWidth;
@@ -60,7 +58,6 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
     }
   };
 
-  // 将 logo绘制到 canvas上
   return new Promise((resolve) => {
     image.onload = () => {
       logoRadius ? drawLogoWithCanvas(image) : drawLogoWithImage(image);
@@ -69,7 +66,6 @@ export const drawLogo = ({ canvas, logo }: RenderQrCodeParams) => {
   });
 };
 
-// copy来的方法，用于绘制圆角
 function canvasRoundRect(ctx: CanvasRenderingContext2D) {
   return (x: number, y: number, w: number, h: number, r: number) => {
     const minSize = Math.min(w, h);

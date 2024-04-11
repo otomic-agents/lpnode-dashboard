@@ -43,11 +43,11 @@ function createEditRender() {
       renderOpts,
       params,
       (value: any) => {
-        // 处理 model 值双向绑定
+
         XEUtils.set(row, column.field as string, value);
       },
       () => {
-        // 处理 change 事件相关逻辑
+
         $table.updateStatus(params);
       },
     );
@@ -173,11 +173,11 @@ function createFilterRender() {
                     renderOpts,
                     params,
                     (value: any) => {
-                      // 处理 model 值双向绑定
+
                       option.data = value;
                     },
                     () => {
-                      // 处理 change 事件相关逻辑
+
                       const { $panel } = params;
                       $panel.changeOption(
                         null,
@@ -222,11 +222,11 @@ function createFilterRender() {
                     renderOpts,
                     params,
                     (value: any) => {
-                      // 处理 model 值双向绑定
+
                       option.data = value;
                     },
                     () => {
-                      // 处理 change 事件相关逻辑
+
                       const { $panel } = params;
                       $panel.changeOption(
                         null,

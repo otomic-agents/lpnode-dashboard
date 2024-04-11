@@ -6,7 +6,6 @@ export const gridComponentMethodKeys: (
   | keyof TableEditMethods
   | keyof TableValidatorMethods
 )[] = [
-  // vxe-grid 部分
   'dispatchEvent',
   'commitProxy',
   'getFormItems',
@@ -17,7 +16,6 @@ export const gridComponentMethodKeys: (
   'revert',
   'getProxyInfo',
 
-  // vxe-table和vxe-grid公共部分
   'clearAll',
   'syncData',
   'updateData',
@@ -131,7 +129,6 @@ export const gridComponentMethodKeys: (
   'blur',
   'connect',
 
-  // vxe-table-edit部分
   'insert',
   'insertAt',
   'remove',
@@ -155,6 +152,5 @@ export const gridComponentMethodKeys: (
   'fullValidate',
   'validate',
 
-  //... 如有缺少在此处追加
   // xxx
 ];

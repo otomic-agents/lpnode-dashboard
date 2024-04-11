@@ -52,10 +52,6 @@ export default defineComponent({
       emitEvents[type] = (...args: any[]) => emit(name, ...args);
     });
 
-    /**
-     * @description: 二次封装需要的所有属性
-     *  1.部分属性需要和全局属性进行合并
-     */
     const getBindValues = computed<BasicTableProps>(() => {
       const propsData: BasicTableProps = {
         ...attrs,
@@ -65,9 +61,6 @@ export default defineComponent({
       return propsData;
     });
 
-    /**
-     * @description: Table 所有属性
-     */
     const getBindGridValues = computed(() => {
       const omitProps = omit(getBindValues.value, ignorePropKeys);
 
@@ -77,16 +70,10 @@ export default defineComponent({
       };
     });
 
-    /**
-     * @description: 组件外层class
-     */
     const getWrapperClass = computed(() => {
       return [attrs.class];
     });
 
-    /**
-     * @description: 重写Vxe-table 方法
-     */
     const getBindGridEvent: VxeGridEventProps = {
       ...emitEvents,
     };

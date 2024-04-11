@@ -138,7 +138,7 @@
           address: '0x30DfEC4d5Cd6f819492A04c34E20f5F15171e934',
           token_name: 'oBTC',
           market_name: 'BTC',
-          precision: '18',
+          precision: 18,
           type: 'coin'
         })
       }
@@ -148,7 +148,7 @@
           address: '0x1016A0886b4AeD69043367d501a99cfBAaB052B5',
           token_name: 'oETH',
           market_name: 'ETH',
-          precision: '18',
+          precision: 18,
           type: 'coin'
         })
       }
@@ -158,7 +158,7 @@
           address: '0xFC0894Eb1ea1876ddC183578F37AFe64bFFAdBd0',
           token_name: 'oUSDC',
           market_name: 'USDC',
-          precision: '18',
+          precision: 18,
           type: 'stable_coin'
         })
       }
@@ -168,7 +168,7 @@
           address: '0x0A327833232Ec4c88DbFa0ae6E44b31D6956088e',
           token_name: 'oBTC',
           market_name: 'BTC',
-          precision: '18',
+          precision: 18,
           type: 'coin'
         })
       }
@@ -178,7 +178,7 @@
           address: '0xB526be0B8AeD308892160914B0F25f60Ad3678D7',
           token_name: 'oETH',
           market_name: 'ETH',
-          precision: '18',
+          precision: 18,
           type: 'coin'
         })
       }
@@ -188,7 +188,7 @@
           address: '0x43e2F9124Ec363A71193bD4fFB1ae6D608185147',
           token_name: 'oUSDC',
           market_name: 'USDC',
-          precision: '18',
+          precision: 18,
           type: 'stable_coin'
         })
       }
@@ -198,7 +198,7 @@
           address: '0x7e36F06Ee6D27b123e8A1fDCBa27F04b56eFb1d5',
           token_name: 'oBTC',
           market_name: 'BTC',
-          precision: '18',
+          precision: 18,
           type: 'coin'
         })
       }
@@ -208,7 +208,7 @@
           address: '0xD511B82FC31eCcDeFBe558552d9fe8b7a4e932b6',
           token_name: 'oETH',
           market_name: 'ETH',
-          precision: '18',
+          precision: 18,
           type: 'coin'
         })
       }
@@ -218,7 +218,7 @@
           address: '0x25B28e17e75F44fF2275F2ba8923ce69CECa73D8',
           token_name: 'oUSDC',
           market_name: 'USDC',
-          precision: '18',
+          precision: 18,
           type: 'stable_coin'
         })
       }

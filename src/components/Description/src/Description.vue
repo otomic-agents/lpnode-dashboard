@@ -84,9 +84,7 @@
         return { ...unref(attrs), ...unref(getProps) } as DescriptionsProps;
       });
 
-      /**
-       * @description:设置desc
-       */
+
       function setDescProps(descProps: Partial<DescriptionProps>): void {
         // Keep the last setDrawerProps
         propsRef.value = { ...(unref(propsRef) as Recordable), ...descProps } as Recordable;

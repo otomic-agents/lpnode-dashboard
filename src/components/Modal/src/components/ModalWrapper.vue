@@ -110,8 +110,7 @@
       }
 
       async function setModalHeight() {
-        // 解决在弹窗关闭的时候监听还存在,导致再次打开弹窗没有高度
-        // 加上这个,就必须在使用的时候传递父级的visible
+
         if (!props.visible) return;
         const wrapperRefDom = unref(wrapperRef);
         if (!wrapperRefDom) return;
@@ -133,8 +132,7 @@
             (props.footerOffset! || 0) -
             props.modalFooterHeight -
             props.modalHeaderHeight;
-
-          // 距离顶部过进会出现滚动条
+            
           if (modalTop < 40) {
             maxHeight -= 26;
           }

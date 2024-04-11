@@ -6,9 +6,7 @@ import { isNumber, isObject } from '/@/utils/is';
 
 const { t } = useI18n();
 
-/**
- * @description: 生成placeholder
- */
+
 export function createPlaceholderMessage(component: ComponentType) {
   if (component.includes('Input') || component.includes('Complete')) {
     return t('common.inputText');
@@ -23,7 +21,7 @@ export function createPlaceholderMessage(component: ComponentType) {
     component.includes('Radio') ||
     component.includes('Switch')
   ) {
-    // return `请选择${label}`;
+
     return t('common.chooseText');
   }
   return '';
@@ -66,9 +64,6 @@ export function handleInputNumberValue(component?: ComponentType, val?: any) {
   return val;
 }
 
-/**
- * 时间字段
- */
 export const dateItemType = genType();
 
 export const defaultValueComponents = ['Input', 'InputPassword', 'InputSearch', 'InputTextArea'];

@@ -92,36 +92,6 @@
                 </div>
               </template>
             </a-list-item-meta>
-            <!-- <a-list-item-meta>
-              
-              <template #avatar>
-                <a-row :gutter="1">
-                <a-col :span="12"><Icon  class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" /></a-col>
-                <a-col :span="12"><Icon  class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" /></a-col>
-                <a-col :span="12"><Icon  class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" /></a-col>
-                <a-col :span="12"><Icon  class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" /></a-col>
-                </a-row>
-              </template>
-              <template #title>
-                <span>{{ item.title }}</span>
-                <div class="extra" v-if="item.extra">
-                  {{ item.extra }}
-                </div>
-              </template>
-              <template #description>
-                <div class="description">
-                  {{ item.description }}
-                </div>
-                <div class="info">
-                  <div><span>Owner</span>{{ item.author }}</div>
-                  <div><span>开始时间</span>{{ item.datetime }}</div>
-                </div>
-                <div class="progress">
-                  <Progress :percent="item.percent" status="active" />
-                </div>
-              </template>
-
-            </a-list-item-meta> -->
           </a-list-item>
         </template>
       </a-list>

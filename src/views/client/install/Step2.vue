@@ -51,9 +51,6 @@
         actionColOptions: {
           span: 14,
         },
-        // resetButtonOptions: {
-        //   text: '上一步',
-        // },
         showResetButton: false,
         submitButtonOptions: {
           text: 'confirm',

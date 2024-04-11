@@ -154,7 +154,6 @@ export default function ({
       }
     }
 
-    // 确保页面发送更新
     vm?.proxy?.$forceUpdate();
 
     advanceState.actionSpan = (realItemColSum % BASIC_COL_LEN) + unref(getEmptySpan);

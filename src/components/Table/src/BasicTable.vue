@@ -28,7 +28,7 @@
       <template #headerCell="{ column }">
         <HeaderCell :column="column" />
       </template>
-      <!-- 增加对antdv3.x兼容 -->
+
       <template #bodyCell="data">
         <slot name="bodyCell" v-bind="data || {}"></slot>
       </template>
@@ -175,7 +175,7 @@
       function handleTableChange(...args) {
         onTableChange.call(undefined, ...args);
         emit('change', ...args);
-        // 解决通过useTable注册onChange时不起作用的问题
+
         const { onChange } = unref(getProps);
         onChange && isFunction(onChange) && onChange.call(undefined, ...args);
       }

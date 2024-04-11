@@ -9,9 +9,9 @@ export interface ActionItem extends ButtonProps {
   popConfirm?: PopConfirm;
   disabled?: boolean;
   divider?: boolean;
-  // 权限编码控制是否显示
+
   auth?: RoleEnum | RoleEnum[] | string | string[];
-  // 业务控制是否显示
+
   ifShow?: boolean | ((action: ActionItem) => boolean);
   tooltip?: string | TooltipProps;
 }

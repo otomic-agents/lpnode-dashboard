@@ -107,9 +107,7 @@ export function useTree(treeDataRef: Ref<TreeDataItem[]>, getFieldNames: Compute
     return res as string[] | number[];
   }
 
-  /**
-   * 添加节点
-   */
+
   function insertNodeByKey({ parentKey = null, node, push = 'push' }: InsertNodeParams) {
     const treeData: any = cloneDeep(unref(treeDataRef));
     if (!parentKey) {
@@ -129,9 +127,7 @@ export function useTree(treeDataRef: Ref<TreeDataItem[]>, getFieldNames: Compute
     });
     treeDataRef.value = treeData;
   }
-  /**
-   * 批量添加节点
-   */
+
   function insertNodesByKey({ parentKey = null, list, push = 'push' }: InsertNodeParams) {
     const treeData: any = cloneDeep(unref(treeDataRef));
     if (!list || list.length < 1) {
