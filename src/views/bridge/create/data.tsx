@@ -14,7 +14,7 @@ export const step2Schemas: FormSchema[] = [
     colProps: {
       span: 24,
     },
-    labelWidth: 120
+    labelWidth: 260
   },
   {
     field: 'name',
@@ -25,7 +25,7 @@ export const step2Schemas: FormSchema[] = [
     colProps: {
       span: 24,
     },
-    labelWidth: 120
+    labelWidth: 260
   },
   {
     field: 'enable_limiter',
@@ -40,7 +40,7 @@ export const step2Schemas: FormSchema[] = [
     colProps: {
       span: 24,
     },
-    labelWidth: 120,
+    labelWidth: 260,
   },
 ];
 

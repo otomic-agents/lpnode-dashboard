@@ -22,7 +22,7 @@
           </a-input>
 
     <a-button type="primary" @click="confirm"> Confirm </a-button> 
-    <a-button type="error" @click="del"> Delete </a-button> 
+    <!-- <a-button type="error" @click="del"> Delete </a-button>  -->
   </BasicDrawer>
 </template>
 <script lang="ts">
