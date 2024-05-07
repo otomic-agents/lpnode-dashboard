@@ -33,6 +33,8 @@ export const getChainType = (chain) => {
           return 'xrp'
         case 'near':
           return 'near'
+        case 'op':
+          return 'evm'
         default:
           break;
       }
