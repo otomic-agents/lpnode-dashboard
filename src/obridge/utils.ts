@@ -11,7 +11,9 @@ export const getChainID = (chain) => {
         case 'eth':
           return 60;
         case 'polygon':
-          return 966
+          return 966;
+        case 'op':
+          return 614
         default:
           break;
       }
