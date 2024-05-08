@@ -54,6 +54,8 @@ export const getChainName = (chainId) => {
       return 'eth'
     case 966:
       return 'polygon'
+    case 614:
+      return 'op'
     default:
       break;
   }
