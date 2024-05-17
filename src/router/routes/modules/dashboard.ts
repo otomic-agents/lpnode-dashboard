@@ -40,6 +40,14 @@ const dashboard: AppRouteModule = {
         title: t('routes.dashboard.workbench'),
       },
     },
+    {
+      path:'setting',
+      name:'Setting',
+      component: () => import('/@/views/dashboard/settings/index.vue'),
+      meta:{
+        title:t('routes.dashboard.settings'),
+      }
+    }
   ],
 };
 

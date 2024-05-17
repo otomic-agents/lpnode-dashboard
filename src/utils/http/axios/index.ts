@@ -24,7 +24,6 @@ const urlPrefix = globSetting.urlPrefix;
 const { createMessage, createErrorModal, createSuccessModal } = useMessage();
 
 const transform: AxiosTransform = {
-
   transformResponseHook: (res: AxiosResponse<Result>, options: RequestOptions) => {
     const { t } = useI18n();
     const { isTransformResponse, isReturnNativeResponse } = options;
@@ -50,7 +49,7 @@ const transform: AxiosTransform = {
 
     const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
     if (hasSuccess) {
-      console.log('hit hasSuccess')
+      console.log('hit hasSuccess');
       let successMsg = message;
 
       if (isNull(successMsg) || isUnDef(successMsg) || isEmpty(successMsg)) {
@@ -216,7 +215,6 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         transform: clone(transform),
 
         requestOptions: {
-
           joinPrefix: true,
 
           isReturnNativeResponse: false,
@@ -262,6 +260,7 @@ export const lpHttp = createAxios({
   requestOptions: {
     // apiUrl: 'https://48fcf1da.jksdgb.snowinning.com',
     apiUrl: `https://${window.location.host}`,
+    // apiUrl:'https://48fcf1da.vaughnmedellins394.myterminus.com',
     urlPrefix: '',
   },
 });
