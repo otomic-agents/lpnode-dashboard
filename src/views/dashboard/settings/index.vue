@@ -21,22 +21,24 @@
       PageWrapper,
       BasicForm,
     },
-    setup(props, { emit }) {
+    setup() {
       const { createMessage } = useMessage();
-      const [register, { validate, setProps, setFieldsValue }] = useForm({
+      const [register, { validate, setProps }] = useForm({
         labelWidth: 80,
-        schemas: {
-          field: 'relayUri',
-          component: 'Input',
-          label: 'Relay Uri',
-          required: true,
-          defaultValue: '',
-          colProps: {
-            span: 24,
+        schemas: [
+          {
+            field: 'relayUri',
+            component: 'Input',
+            label: 'Relay Uri',
+            required: true,
+            defaultValue: '',
+            colProps: {
+              span: 24,
+            },
+            labelWidth: 230,
+            // ,defaultValue: "aaa"
           },
-          labelWidth: 230,
-          // ,defaultValue: "aaa"
-        },
+        ],
         actionColOptions: {
           span: 14,
         },
@@ -44,7 +46,9 @@
         submitButtonOptions: {
           text: 'submit',
         },
-        resetFunc: () => {},
+        resetFunc: async () => {
+          return undefined;
+        },
         submitFunc: async () => {
           try {
             const values = await validate();
