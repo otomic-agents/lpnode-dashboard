@@ -132,10 +132,32 @@ import RegisterLp from '/@/views/account/register/index.vue';
 import ConfigBridge from '/@/views/bridge/create/index.vue';
 import AuthenticationLimiter from '/@/views/account/limiter/index.vue'
 
+// testnet
+// const dataToken1 = {
+//     "defaultData": {
+//         "address": "0x7E477f81Fb9E7184190Ca53C8B9069532408Cc9B",
+//         "token_name": "TestERC20Src",
+//         "market_name": "USDT",
+//         "precision": 18,
+//         "type": "stable_coin"
+//     }
+// }
+
+// const dataToken2 = {
+//     "defaultData": {
+//         "address": "0x61D35C6B6a7568542acA42448B47690650C69bb9",
+//         "token_name": "TestERC20Dst",
+//         "market_name": "USDC",
+//         "precision": 18,
+//         "type": "stable_coin"
+//     }
+// }
+
+// mainnet
 const dataToken1 = {
     "defaultData": {
-        "address": "0x7E477f81Fb9E7184190Ca53C8B9069532408Cc9B",
-        "token_name": "TestERC20Src",
+        "address": "0x55d398326f99059ff775485246999027b3197955",
+        "token_name": "USDT",
         "market_name": "USDT",
         "precision": 18,
         "type": "stable_coin"
@@ -144,9 +166,9 @@ const dataToken1 = {
 
 const dataToken2 = {
     "defaultData": {
-        "address": "0x61D35C6B6a7568542acA42448B47690650C69bb9",
-        "token_name": "TestERC20Dst",
-        "market_name": "USDC",
+        "address": "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58",
+        "token_name": "USDT",
+        "market_name": "USDT",
         "precision": 18,
         "type": "stable_coin"
     }
