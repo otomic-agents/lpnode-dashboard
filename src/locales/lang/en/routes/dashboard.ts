@@ -3,5 +3,6 @@ export default {
   about: 'About',
   workbench: 'Workbench',
   analysis: 'Analysis',
-  moniter: 'Moniter'
+  moniter: 'Moniter',
+  settings: 'Settings'
 };
