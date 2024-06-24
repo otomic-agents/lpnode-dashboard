@@ -1,5 +1,5 @@
 <template>
-  <PageWrapper title="Create" contentBackground content="create a bridge" contentClass="p-4">
+  <PageWrapper title="Create" contentBackground content="write a script" contentClass="p-4">
     <div class="step-form-form">
       <a-steps :current="current">
         <a-step title="Input script" @click="handleRedo" />
@@ -21,8 +21,9 @@
       @prev="handleStep3Prev"
       @save="handleSaveScript"
       v-if="initSetp3"
-    /> </PageWrapper
-></template>
+    />
+  </PageWrapper>
+</template>
 <script lang="ts">
   import { CodeEditor, MODE } from '/@/components/CodeEditor';
   import { defineComponent, ref, reactive, toRefs } from 'vue';
