@@ -1,13 +1,12 @@
 <template>
   <PageWrapper :class="prefixCls" title="Bridges">
     <template #headerContent>
-      
       <!-- <div :class="`${prefixCls}__link`">
         <a><Icon icon="bx:bx-paper-plane" color="#1890ff" /><span>start</span></a>
         <a><Icon icon="carbon:warning" color="#1890ff" /><span>info</span></a>
         <a><Icon icon="ion:document-text-outline" color="#1890ff" /><span>doc</span></a>
       </div> -->
-      <a-button type="primary" @click="restartFn"> Restart </a-button> 
+      <!-- <a-button type="primary" @click="restartFn"> Restart </a-button>  -->
     </template>
 
     <div :class="`${prefixCls}__content`">
@@ -21,26 +20,16 @@
                   <div :class="`${prefixCls}__card-title`">
                     <Icon class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" />
                     {{ item.title }}
-
-                    
                   </div>
+                  <div :class="`${prefixCls}__card-detail`"> Amm: {{ item.amm }} </div>
+                  <div :class="`${prefixCls}__card-detail`"> Chain: {{ item.chain }} </div>
                   <div :class="`${prefixCls}__card-detail`">
-                    Amm: {{ item.amm }}
-                  </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    Chain: {{ item.chain }}
-                  </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    Token: <br/>
-                    {{ item.srcToken }} -> <br/>
+                    Token: <br />
+                    {{ item.srcToken }} -> <br />
                     {{ item.dstToken }}
                   </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    Receiver: {{ item.receiver }}
-                  </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    Sender: {{ item.sender }}
-                  </div>
+                  <div :class="`${prefixCls}__card-detail`"> Receiver: {{ item.receiver }} </div>
+                  <div :class="`${prefixCls}__card-detail`"> Sender: {{ item.sender }} </div>
                 </a-card>
               </a-list-item>
             </a-col>
@@ -54,7 +43,7 @@
   import { defineComponent, ref } from 'vue';
   import Icon from '/@/components/Icon/index';
   import { PageWrapper } from '/@/components/Page';
-  import { Card, Row, Col, List,  } from 'ant-design-vue';
+  import { Card, Row, Col, List } from 'ant-design-vue';
   import { list, deleteBridge } from '/@/api/lpnode/bridge';
   import { BridgeInfo, DeleteParams } from '/@/api/lpnode/model/bridgeModel';
   import { getChainName } from '/@/obridge/utils';
@@ -72,18 +61,17 @@
       [Col.name]: Col,
     },
     setup() {
-
       const { createMessage } = useMessage();
 
-      const pageList = ref([])
+      const pageList = ref([]);
 
       let fetchList = async () => {
-        let resp: Array<BridgeInfo> = await list({})
-        console.log('resp:')
-        console.log(resp)
+        let resp: Array<BridgeInfo> = await list({});
+        console.log('resp:');
+        console.log(resp);
 
-        let newList = []
-        resp.forEach(item => {
+        let newList = [];
+        resp.forEach((item) => {
           newList.push({
             title: item.bridgeName,
             icon: 'material-symbols:account-balance-wallet-outline',
@@ -96,35 +84,35 @@
             dstToken: item.dstToken,
             receiver: item.lpReceiverAddress,
             sender: item.walletName,
-            id: item._id
-          })
-        })
-        pageList.value = newList
-      }
-      fetchList()
+            id: item._id,
+          });
+        });
+        pageList.value = newList;
+      };
+      fetchList();
 
       const deleteWalletFn = async (bridge) => {
         let params: DeleteParams = {
-          id: bridge.id
-        }
-        let resp = await deleteBridge(params)
+          id: bridge.id,
+        };
+        let resp = await deleteBridge(params);
 
-        if(resp != undefined) {
-          createMessage.success('Delete bridge succeed')
+        if (resp != undefined) {
+          createMessage.success('Delete bridge succeed');
         }
-      }
+      };
 
       const restartFn = async () => {
-        let resp = await restart({})
-        console.log('resp:')
-        console.log(resp)
-      }
+        let resp = await restart({});
+        console.log('resp:');
+        console.log(resp);
+      };
 
       return {
         prefixCls: 'list-card',
         list: pageList,
         deleteWalletFn,
-        restartFn
+        restartFn,
       };
     },
   });

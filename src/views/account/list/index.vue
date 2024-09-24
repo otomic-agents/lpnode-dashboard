@@ -1,13 +1,12 @@
 <template>
   <PageWrapper :class="prefixCls" title="Accounts">
     <template #headerContent>
-      
       <!-- <div :class="`${prefixCls}__link`">
         <a><Icon icon="bx:bx-paper-plane" color="#1890ff" /><span>start</span></a>
         <a><Icon icon="carbon:warning" color="#1890ff" /><span>info</span></a>
         <a><Icon icon="ion:document-text-outline" color="#1890ff" /><span>doc</span></a>
       </div> -->
-      <a-button type="primary" @click="onRefreshAddress"> Refresh authentication address </a-button> 
+      <a-button type="primary" @click="onRefreshAddress"> Refresh authentication address </a-button>
     </template>
 
     <div :class="`${prefixCls}__content`">
@@ -17,16 +16,11 @@
             <a-col :span="8">
               <a-list-item>
                 <a-card :hoverable="true" :class="`${prefixCls}__card`">
-                  
                   <div :class="`${prefixCls}__card-title`">
                     <Icon class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" />
                     {{ item.title }}
-
-                    
                   </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    LP ID Fake: {{ item.lpIdFake }}
-                  </div>
+                  <div :class="`${prefixCls}__card-detail`"> LP ID Fake: {{ item.lpIdFake }} </div>
                   <div :class="`${prefixCls}__card-detail`">
                     LP Node Api Key: {{ item.lpNodeApiKey }}
                   </div>
@@ -69,15 +63,15 @@
       const isLoading = ref(false);
       const { createMessage } = useMessage();
 
-      const pageList = ref([])
+      const pageList = ref([]);
 
       let fetchList = async () => {
-        let resp: Array<AccountInfo> = await list({})
-        console.log('resp:')
-        console.log(resp)
+        let resp: Array<AccountInfo> = await list({});
+        console.log('resp:');
+        console.log(resp);
 
-        let newList = []
-        resp.forEach(item => {
+        let newList = [];
+        resp.forEach((item) => {
           newList.push({
             title: item.name,
             icon: 'material-symbols:account-balance-wallet-outline',
@@ -85,26 +79,30 @@
             active: '100',
             lpIdFake: item.lpIdFake,
             lpNodeApiKey: item.lpNodeApiKey,
-            relayApiKey: item.relayApiKey
-          })
-        })
-        pageList.value = newList
-      }
-      fetchList()
+            relayApiKey: item.relayApiKey,
+          });
+        });
+        pageList.value = newList;
+      };
+      fetchList();
 
       const onRefreshAddress = async () => {
-        isLoading.value = true
-        let resp = await updateLpWallet({})
-        console.log('resp', resp)
-        isLoading.value = false
-      }
-
+        isLoading.value = true;
+        try {
+          let resp = await updateLpWallet({});
+          console.log('resp', resp);
+        } catch (e) {
+          console.log('refresh lp wallet error:', e);
+        } finally {
+          isLoading.value = false;
+        }
+      };
 
       return {
         prefixCls: 'list-card',
         list: pageList,
         onRefreshAddress,
-        isLoading
+        isLoading,
       };
     },
   });
