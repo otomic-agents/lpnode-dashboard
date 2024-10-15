@@ -74,7 +74,9 @@ import { edit, listResource } from '/@/api/lpnode/amm';
           "srcWalletId": step2Values.src_wallet,
           // "receiveAddress": step2Values.src_wallet,
           "ammName": step2Values.amm,
-          "enableLimiter": step2Values.enable_limiter
+          "enableLimiter": step2Values.enable_limiter,
+          "relayUri": step2Values.relayUri,
+          "relayApiKey":step2Values.relayApiKey,
         }
 
         try {

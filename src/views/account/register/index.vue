@@ -58,8 +58,7 @@
       async function handleStep2Next(step2Values: any) {
         isLoading.value = true
         let params: any = {
-
-          // name: step2Values.name,
+          relayUrl: step2Values.relayUrl,
           profile: step2Values.profile
         }
 

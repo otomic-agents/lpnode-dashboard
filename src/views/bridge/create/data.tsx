@@ -16,6 +16,7 @@ export const step2Schemas: FormSchema[] = [
     },
     labelWidth: 260
   },
+  
   {
     field: 'name',
     component: 'Input',
@@ -41,6 +42,21 @@ export const step2Schemas: FormSchema[] = [
       span: 24,
     },
     labelWidth: 260,
+  },
+  {
+    field: 'relay',
+    component: 'Select',
+    label: 'relay',
+    required: true,
+    defaultValue: '',
+    componentProps: {
+      options: [
+      ],
+    },
+    colProps: {
+      span: 24,
+    },
+    labelWidth: 260
   },
 ];
 
