@@ -446,6 +446,7 @@
       watch(() => tokens.value, syncOptions)
       watch(() => wallets.value, syncOptions)
       watch(() => amms.value, syncOptions)
+      watch(() => relays.value, syncOptions)
 
       syncChain()
       syncChainId()
