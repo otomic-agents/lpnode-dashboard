@@ -84,25 +84,15 @@
 	        "chainId": getChainID(data.chain.toLowerCase())
         }
 
-        // if(step2Values.type == 'key') {
-          Object.assign(params, {
-            "privateKey": step2Values.private_key,
-            "address": step2Values.address == undefined ? step2Values.account_id : step2Values.address,
-            "accountId": step2Values.account_id,
-            "walletType": "privateKey"
-          })
-        // }
-        // else
-        // if(step2Values.type == 'vault') {
-        //   Object.assign(params, {
-        //     "storeId": step2Values.vaultid,
-        //     "walletType": "storeId",
-        //     // "privateKey": "",
-        //     // "address": ""
-        //   })
-        // }
-
-
+     
+        Object.assign(params, {
+          "privateKey": step2Values.private_key,
+          "address": step2Values.address == undefined ? step2Values.account_id : step2Values.address,
+          "accountId": step2Values.account_id,
+          "walletType": "privateKey",
+          "signServiceEndpoint": step2Values.sign_service_endpoint
+        })
+        
         let resp = await createWallet(params);
         if (resp != undefined) {
           current.value++;

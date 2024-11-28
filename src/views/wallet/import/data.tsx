@@ -32,16 +32,16 @@ export const step2SchemaKeyAddress = {
 }
 
 export const step2SchemaKeyPrivate = {
-  field: 'private_key',
+  field: 'sign_service_endpoint',
   component: 'Input',
-  label: 'Private Key',
+  label: 'Endpoint',
   required: true,
   defaultValue: '',
   colProps: {
     span: 24,
   },
   labelWidth: 230,
-  defaultValue: '058d185b433e50118a1bd451c13a7602df50b060e4a83e3b5057f5feff98fd3f'
+  defaultValue: 'http://192.168.1.1:19000'
 }
 
 export const step2SchemaVaultIds = {
@@ -72,29 +72,6 @@ export const step2Schemas: FormSchema[] = [
     labelWidth: 230,
     defaultValue: 'TestWallet1'
   },
-  // {
-  //   field: 'type',
-  //   component: 'Select',
-  //   label: 'Type',
-  //   required: true,
-  //   defaultValue: 'key',
-  //   componentProps: {
-  //     options: [
-  //       {
-  //         label: 'PrivateKey',
-  //         value: 'key'
-  //       },
-  //       {
-  //         label: 'Vault',
-  //         value: 'vault'
-  //       }
-  //     ],
-  //   },
-  //   colProps: {
-  //     span: 24,
-  //   },
-  //   labelWidth: 230
-  // },
   step2SchemaKeyAddress,
   step2SchemaKeyPrivate
 ];
