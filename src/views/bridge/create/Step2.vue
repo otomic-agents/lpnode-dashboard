@@ -40,13 +40,14 @@
   import { step2SchemasSrc, step2SchemasDst, step2Schemas } from './data';
   import { Alert, Divider, Descriptions } from 'ant-design-vue';
   import { Card, Row, Col, List } from 'ant-design-vue';
-  import { list as programeList, chainList } from '/@/api/lpnode/base';
-  import { ListModel } from '/@/api/lpnode/model/baseModel';
+  import { list as programeList, chainList, relayList } from '/@/api/lpnode/base';
+  import { ListModel,RelayListModel } from '/@/api/lpnode/model/baseModel';
   import { list as tokenList } from '/@/api/lpnode/token';
   import { TokenInfo } from '/@/api/lpnode/model/tokenModel';
   import { list as walletList } from '/@/api/lpnode/wallet';
   import { WalletInfo } from '/@/api/lpnode/model/walletModel';
   import { getChainType, getChainID } from '/@/obridge/utils'
+  import { string } from 'vue-types';
 
   export default defineComponent({
     components: {
@@ -68,6 +69,7 @@
       const tokens = ref([])
       const wallets = ref([])
       const amms = ref([])
+      const relays = ref([])
       
 
       const [register, { validate, setProps }] = useForm({
@@ -131,7 +133,13 @@
             }
           })
           
-
+          relays.value.forEach(relayItem=>{
+            console.log("relayItem",relayItem)
+            if (relayItem.relayApiKey ==values.relay){
+              values.relayUri = relayItem.relayUri
+              values.relayApiKey= relayItem.relayApiKey
+            }
+          })
           setProps({
             submitButtonOptions: {
               loading: false,
@@ -160,6 +168,13 @@
         console.log('resp')
         console.log(resp)
         chainIds.value = resp
+      }
+
+      const syncRelay = async()=>{
+        let resp:RelayListModel = await relayList({})
+        console.log("relay resp")
+        console.log(resp)
+        relays.value = resp
       }
 
       const syncToken = async () => {
@@ -375,6 +390,25 @@
         })
       }
 
+      const updateRelayOptions = async ()=>{
+         let relayArr = [] 
+         relays.value.forEach((item:{ relayUri:string,relayApiKey:string})=>{
+          //@ts-ignore
+          relayArr.push({
+             label: item.relayUri,
+             value: item.relayApiKey
+          })
+         })
+         step2Schemas[3].componentProps = ({}) => {
+          return {
+            options: relayArr
+          }
+        }
+         setProps({
+          schemas: step2Schemas
+        })
+      }
+
       const updateAmmOptions = async () => {
         let newAmmArr = []
         console.log('updateAmmOptions:')
@@ -405,18 +439,21 @@
         updateSrcChainOptions()
         updateDstChainOptions()
         updateAmmOptions()
+        updateRelayOptions()
       }
 
       watch(() => chains.value, syncOptions)
       watch(() => tokens.value, syncOptions)
       watch(() => wallets.value, syncOptions)
       watch(() => amms.value, syncOptions)
+      watch(() => relays.value, syncOptions)
 
       syncChain()
       syncChainId()
       syncToken()
       syncWallet()
       syncAmm()
+      syncRelay()
 
       const onSrcChain = () => {
         console.log('onSrcChain')

@@ -10,6 +10,9 @@ export interface DeploayItem {
 export interface ListParams {
     installType: string;
 }
+export interface RelayListParams{
+
+}
 
 export type ListModel = Array<DeploayItem>
 // export interface ListModel {
@@ -76,4 +79,16 @@ export interface Status {
 //     "name":"bsc"
 //     "errMessage":"redigo: nil returned"
 //     }
+
+export interface RelayItem{
+    id: string;
+    name: string;
+    profile: string;
+    lpIdFake: string;
+    lpNodeApiKey: string;
+    relayApiKey: string;
+    relayUri: string;
+}
 export type StaustListModel = Array<Status>
+
+export type RelayListModel =RelayItem[]

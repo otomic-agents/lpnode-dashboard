@@ -29,6 +29,9 @@
                   <div :class="`${prefixCls}__card-detail`">
                     Chain: {{ item.chain }}
                   </div>
+                  <div :class="`${prefixCls}__card-detail`">
+                    Sign Endpoint: {{ item.signServiceEndpoint }}
+                  </div>
                 </a-card>
               </a-list-item>
             </a-col>
@@ -88,6 +91,7 @@
             color: '#1890ff',
             active: '100',
             address: item.address,
+            signServiceEndpoint:item.signServiceEndpoint,
             chain: getChainName(item.chainId),
             id: item.id
           })
