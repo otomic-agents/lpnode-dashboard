@@ -156,7 +156,7 @@
           address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
           token_name: 'WBTC',
           market_name: 'BTC',
-          precision: 18,
+          precision: 8,
           type: 'coin'
         })
       }
@@ -175,7 +175,7 @@
         setFieldsValue({
           address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
           token_name: 'USDC',
-          market_name: 'USDC',
+          market_name: 'USDT',
           precision: 18,
           type: 'stable_coin'
         })
@@ -186,7 +186,7 @@
           address: '0x0555e30da8f98308edb960aa94c0db47230d2b9c',
           token_name: 'WBTC',
           market_name: 'BTC',
-          precision: 18,
+          precision: 8,
           type: 'coin'
         })
       }
@@ -205,7 +205,7 @@
         setFieldsValue({
           address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
           token_name: 'USDC',
-          market_name: 'USDC',
+          market_name: 'USDT',
           precision: 18,
           type: 'stable_coin'
         })
@@ -216,7 +216,7 @@
           address: '0x68f180fcce6836688e9084f035309e29bf0a2095',
           token_name: 'WBTC',
           market_name: 'BTC',
-          precision: 18,
+          precision: 8,
           type: 'coin'
         })
       }
@@ -235,7 +235,7 @@
         setFieldsValue({
           address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
           token_name: 'USDC',
-          market_name: 'USDC',
+          market_name: 'USDT',
           precision: 18,
           type: 'stable_coin'
         })
@@ -246,7 +246,7 @@
           address: '3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh',
           token_name: 'WBTC',
           market_name: 'BTC',
-          precision: 18,
+          precision: 8,
           type: 'coin'
         })
       }
@@ -265,7 +265,7 @@
         setFieldsValue({
           address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
           token_name: 'USDC',
-          market_name: 'USDC',
+          market_name: 'USDT',
           precision: 18,
           type: 'stable_coin'
         })
