@@ -4,17 +4,17 @@
     <a-row :gutter="24">
       <a-col :span="1" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onEthOBTC"> eth-oBTC </a-button> 
+        <a-button type="primary" @click="onEthWBTC"> eth-WBTC </a-button> 
       </a-col>
 
       <a-col :span="2" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onEthOETH"> eth-oETH </a-button> 
+        <a-button type="primary" @click="onEthWETH"> eth-WETH </a-button> 
       </a-col>
 
       <a-col :span="2" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onEthOUSDC"> eth-oUSDC </a-button> 
+        <a-button type="primary" @click="onEthUSDC"> eth-USDC </a-button> 
       </a-col>
       <a-col :span="1" ></a-col>
     </a-row>
@@ -22,17 +22,17 @@
     <a-row :gutter="24">
       <a-col :span="1" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onAvaxOBTC"> avax-oBTC </a-button> 
+        <a-button type="primary" @click="onBscWBTC"> bsc-WBTC </a-button> 
       </a-col>
 
       <a-col :span="2" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onAvaxOETH"> avax-oETH </a-button> 
+        <a-button type="primary" @click="onBscWETH"> bsc-WETH </a-button> 
       </a-col>
 
       <a-col :span="2" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onAvaxOUSDC"> avax-oUSDC </a-button> 
+        <a-button type="primary" @click="onBscUSDC"> bsc-USDC </a-button> 
       </a-col>
       <a-col :span="1" ></a-col>
     </a-row>
@@ -40,17 +40,35 @@
     <a-row :gutter="24">
       <a-col :span="1" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onPolygonOBTC"> polygon-oBTC </a-button> 
+        <a-button type="primary" @click="onOptWBTC"> opt-WBTC </a-button> 
       </a-col>
 
       <a-col :span="2" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onPolygonOETH"> polygon-oETH </a-button> 
+        <a-button type="primary" @click="onOptWETH"> opt-WETH </a-button> 
       </a-col>
 
       <a-col :span="2" ></a-col>
       <a-col :span="6" >
-        <a-button type="primary" @click="onPolygonOUSDC"> polygon-oUSDC </a-button>
+        <a-button type="primary" @click="onOptUSDC"> opt-USDC </a-button>
+      </a-col>
+      <a-col :span="1" ></a-col>
+    </a-row>
+
+    <a-row :gutter="24">
+      <a-col :span="1" ></a-col>
+      <a-col :span="6" >
+        <a-button type="primary" @click="onSolanaWBTC"> solana-WBTC </a-button> 
+      </a-col>
+
+      <a-col :span="2" ></a-col>
+      <a-col :span="6" >
+        <a-button type="primary" @click="onSolanaWETH"> solana-WETH </a-button> 
+      </a-col>
+
+      <a-col :span="2" ></a-col>
+      <a-col :span="6" >
+        <a-button type="primary" @click="onSolanaUSDC"> solana-USDC </a-button>
       </a-col>
       <a-col :span="1" ></a-col>
     </a-row>
@@ -133,90 +151,120 @@
         } catch (error) {}
       }
 
-      const onEthOBTC = () => {
+      const onEthWBTC = () => {
         setFieldsValue({
-          address: '0x30DfEC4d5Cd6f819492A04c34E20f5F15171e934',
-          token_name: 'oBTC',
+          address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+          token_name: 'WBTC',
           market_name: 'BTC',
           precision: 18,
           type: 'coin'
         })
       }
 
-      const onEthOETH = () => {
+      const onEthWETH = () => {
         setFieldsValue({
-          address: '0x1016A0886b4AeD69043367d501a99cfBAaB052B5',
-          token_name: 'oETH',
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          token_name: 'WETH',
           market_name: 'ETH',
           precision: 18,
           type: 'coin'
         })
       }
 
-      const onEthOUSDC = () => {
+      const onEthUSDC = () => {
         setFieldsValue({
-          address: '0xFC0894Eb1ea1876ddC183578F37AFe64bFFAdBd0',
-          token_name: 'oUSDC',
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          token_name: 'USDC',
           market_name: 'USDC',
           precision: 18,
           type: 'stable_coin'
         })
       }
 
-      const onAvaxOBTC = () => {
+      const onBscWBTC = () => {
         setFieldsValue({
-          address: '0x0A327833232Ec4c88DbFa0ae6E44b31D6956088e',
-          token_name: 'oBTC',
+          address: '0x0555e30da8f98308edb960aa94c0db47230d2b9c',
+          token_name: 'WBTC',
           market_name: 'BTC',
           precision: 18,
           type: 'coin'
         })
       }
 
-      const onAvaxOETH = () => {
+      const onBscWETH = () => {
         setFieldsValue({
-          address: '0xB526be0B8AeD308892160914B0F25f60Ad3678D7',
-          token_name: 'oETH',
+          address: '0x4db5a66e937a9f4473fa95b1caf1d1e1d62e29ea',
+          token_name: 'WETH',
           market_name: 'ETH',
           precision: 18,
           type: 'coin'
         })
       }
 
-      const onAvaxOUSDC = () => {
+      const onBscUSDC = () => {
         setFieldsValue({
-          address: '0x43e2F9124Ec363A71193bD4fFB1ae6D608185147',
-          token_name: 'oUSDC',
+          address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+          token_name: 'USDC',
           market_name: 'USDC',
           precision: 18,
           type: 'stable_coin'
         })
       }
 
-      const onPolygonOBTC = () => {
+      const onOptWBTC = () => {
         setFieldsValue({
-          address: '0x7e36F06Ee6D27b123e8A1fDCBa27F04b56eFb1d5',
-          token_name: 'oBTC',
+          address: '0x68f180fcce6836688e9084f035309e29bf0a2095',
+          token_name: 'WBTC',
           market_name: 'BTC',
           precision: 18,
           type: 'coin'
         })
       }
 
-      const onPolygonOETH = () => {
+      const onOptWETH = () => {
         setFieldsValue({
-          address: '0xD511B82FC31eCcDeFBe558552d9fe8b7a4e932b6',
-          token_name: 'oETH',
+          address: '0x4200000000000000000000000000000000000006',
+          token_name: 'WETH',
           market_name: 'ETH',
           precision: 18,
           type: 'coin'
         })
       }
 
-      const onPolygonOUSDC = () => {
+      const onOptUSDC = () => {
         setFieldsValue({
-          address: '0x25B28e17e75F44fF2275F2ba8923ce69CECa73D8',
-          token_name: 'oUSDC',
+          address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          token_name: 'USDC',
+          market_name: 'USDC',
+          precision: 18,
+          type: 'stable_coin'
+        })
+      }
+
+      const onSolanaWBTC = () => {
+        setFieldsValue({
+          address: '3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh',
+          token_name: 'WBTC',
+          market_name: 'BTC',
+          precision: 18,
+          type: 'coin'
+        })
+      }
+
+      const onSolanaWETH = () => {
+        setFieldsValue({
+          address: '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs',
+          token_name: 'WETH',
+          market_name: 'ETH',
+          precision: 18,
+          type: 'coin'
+        })
+      }
+
+      const onSolanaUSDC = () => {
+        setFieldsValue({
+          address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          token_name: 'USDC',
           market_name: 'USDC',
           precision: 18,
           type: 'stable_coin'
@@ -224,9 +272,10 @@
       }
 
       return { register, 
-        onEthOBTC, onEthOETH, onEthOUSDC, 
-        onAvaxOBTC, onAvaxOETH, onAvaxOUSDC,
-        onPolygonOBTC, onPolygonOETH, onPolygonOUSDC };
+        onEthWBTC, onEthWETH, onEthUSDC,
+        onBscWBTC, onBscWETH, onBscUSDC,
+        onOptWBTC, onOptWETH, onOptUSDC,
+        onSolanaWBTC, onSolanaWETH, onSolanaUSDC };
     },
   });
 </script>
