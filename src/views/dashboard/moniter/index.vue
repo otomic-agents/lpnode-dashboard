@@ -141,14 +141,6 @@ const checker = {
       message: heightSync ? 'Synchronized' : 'Not synchronized'
     });
 
-    const watcherList = _.get(body, 'monitorInfo.watcher', []);
-    const watchersOk = watcherList.length >= 5;
-    checks.push({
-      name: 'Watcher Nodes',
-      status: watchersOk,
-      message: watchersOk ? 'Sufficient watchers' : 'Insufficient watchers'
-    });
-
     const allPassed = checks.every(check => check.status);
     return { checks, allPassed };
   },
