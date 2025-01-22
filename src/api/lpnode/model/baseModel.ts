@@ -5,6 +5,7 @@ export interface DeploayItem {
     name: string;
     status: number;
     yaml: string;
+    statusBody:string;
 }
 
 export interface ListParams {
