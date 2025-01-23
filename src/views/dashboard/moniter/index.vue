@@ -231,13 +231,12 @@ const checker = {
 
     let allSymbolsOk = true;
     symbolList.forEach((symbol) => {
+      console.log(symbol)
       const symbolOrderbook = orderbook[symbol];
       if (symbolOrderbook) {
         const updateTime = _.get(symbolOrderbook, 'timestamp');
         const dataFresh = new Date().getTime() - updateTime <= 1000 * 60 * 3;
         allSymbolsOk = allSymbolsOk && dataFresh;
-      } else {
-        allSymbolsOk = false;
       }
     });
 
