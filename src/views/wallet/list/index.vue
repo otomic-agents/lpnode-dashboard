@@ -16,21 +16,25 @@
             <a-col :span="8">
               <a-list-item>
                 <a-card :hoverable="true" :class="`${prefixCls}__card`">
-                  <template #extra><a @click="deleteWalletFn(item)">delete</a></template>
+                  <template #extra>
+                    <a-button type="link" danger @click="deleteWalletFn(item)">delete</a-button>
+                  </template>
                   <div :class="`${prefixCls}__card-title`">
                     <Icon class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" />
                     {{ item.title }}
-
-                    
+                    <a-tag color="blue" class="ml-2">{{ item.chain }}</a-tag>
+                  </div>
+                  <div :class="`${prefixCls}__card-address`">
+                    {{ formatAddress(item.address) }}
+                    <a-tooltip :title="item.address">
+                      <CopyOutlined class="copy-icon" @click="copyAddress(item.address)" />
+                    </a-tooltip>
+                  </div>
+                  <div :class="`${prefixCls}__card-balance`">
+                    Balance: {{ item.balance }} {{ item.chain }}
                   </div>
                   <div :class="`${prefixCls}__card-detail`">
-                    {{ item.address }}
-                  </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    Chain: {{ item.chain }}
-                  </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    Sign Endpoint: {{ item.signServiceEndpoint }}
+                      Sign Endpoint: {{ item.signServiceEndpoint }}
                   </div>
                 </a-card>
               </a-list-item>
@@ -43,22 +47,30 @@
   </PageWrapper>
 </template>
 <script lang="ts">
+  import { CopyOutlined } from '@ant-design/icons-vue';
+  import { Row as RowType, Col as ColType, Card as CardType, Progress as ProgressType, List as ListType } from 'ant-design-vue';
   import { defineComponent, ref } from 'vue';
   import Icon from '/@/components/Icon/index';
   import { PageWrapper } from '/@/components/Page';
-  import { Card, Row, Col, List } from 'ant-design-vue';
   import { list, deleteWallet } from '/@/api/lpnode/wallet';
   import { WalletInfo, DeleteParams } from '/@/api/lpnode/model/walletModel';
   import { getChainName } from '/@/obridge/utils';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { Loading } from '/@/components/Loading/index';
   import { useTabs } from '/@/hooks/web/useTabs';
+  
 
+  const Progress: any = ProgressType;
+  const Row: any = RowType;
+  const Col: any = ColType;
+  const Card: any = CardType;
+  const List: any = ListType;
   export default defineComponent({
     components: {
       Loading,
       Icon,
       PageWrapper,
+      CopyOutlined,
       [Card.name]: Card,
       [List.name]: List,
       [List.Item.name]: List.Item,
@@ -66,8 +78,15 @@
       [Col.name]: Col,
     },
     setup() {
+      const formatAddress = (address: string) => {
+          return `${address.slice(0, 12)}...${address.slice(-8)}`;
+      };
 
-      const { createMessage } = useMessage();
+      const copyAddress = (address: string) => {
+        navigator.clipboard.writeText(address);
+        createMessage.success('copyed');
+      };
+      const { createMessage } = useMessage()
       const isLoading = ref(false);
       const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
       // const loadingProps = computed(() => {
@@ -76,25 +95,26 @@
       // });
       // const { getLoading, setLoading } = useLoading(loadingProps);
 
-      const pageList = ref([])
+      const pageList:any = ref([])
 
       let fetchList = async () => {
-        let resp: Array<WalletInfo> = await list({})
+        let resp: any = await list({})
         console.log('resp:')
         console.log(resp)
 
-        let newList = []
+        let newList:any[] = []
         resp.forEach(item => {
           newList.push({
-            title: item.walletName,
-            icon: 'material-symbols:account-balance-wallet-outline',
-            color: '#1890ff',
-            active: '100',
-            address: item.address,
-            signServiceEndpoint:item.signServiceEndpoint,
-            chain: getChainName(item.chainId),
-            id: item.id
-          })
+              title: item.walletName,
+              icon: 'material-symbols:account-balance-wallet-outline', 
+              color: '#1890ff',
+              active: '100',
+              address: item.address,
+              signServiceEndpoint: item.signServiceEndpoint,
+              chain: getChainName(item.chainId),
+              balance: item.balance,
+              id: item.id
+            })
         })
         pageList.value = newList
       }
@@ -115,8 +135,9 @@
         isLoading.value = false
         refreshPage()
       }
-
       return {
+        formatAddress,
+        copyAddress,
         // loading,
         isLoading,
         prefixCls: 'list-card',
@@ -140,7 +161,29 @@
         margin-left: 5px;
       }
     }
+    &__card-address {
+        padding: 12px 0;
+        font-family: monospace;  
+        font-size: 14px;       
+        letter-spacing: 0.5px; 
+        color: @text-color;
+        
+        .copy-icon {
+            margin-left: 12px; 
+            cursor: pointer;
+            
+            &:hover {
+                color: @primary-color;
+            }
+        }
+    }
 
+    &__card-balance {
+      font-size: 16px;
+      font-weight: 500;
+      color: @success-color;
+      padding: 8px 0;
+    }
     &__card {
       width: 100%;
       margin-bottom: -8px;
@@ -164,7 +207,6 @@
 
       &-detail {
         padding-top: 10px;
-        padding-left: 30px;
         font-size: 14px;
         color: @text-color-secondary;
       }
