@@ -151,12 +151,12 @@
         } catch (error) {}
       }
 
-      const onBscWBTC = () => {
+      const onBscBTCB = () => {
         setFieldsValue({
-          address: '0x0555e30da8f98308edb960aa94c0db47230d2b9c',
-          token_name: 'WBTC',
+          address: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
+          token_name: 'BTCB',
           market_name: 'BTC',
-          precision: 8,
+          precision: 18,
           type: 'coin'
         })
       }
@@ -274,7 +274,7 @@
 
       return { register, 
         onEthWBTC, onEthWETH, onEthUSDC,
-        onBscWBTC, onBscWETH, onBscUSDC,
+        onBscBTCB, onBscWETH, onBscUSDC,
         onOptWBTC, onOptWETH, onOptUSDC,
         onSolanaWBTC, onSolanaWETH, onSolanaUSDC};
     },
