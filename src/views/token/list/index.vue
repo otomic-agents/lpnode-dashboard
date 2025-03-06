@@ -152,16 +152,25 @@
       }
 
       const fetch = async () => {
-        let resp: Array<TokenInfo> = await list({})
+      try {
+        let resp:any = await list({})
         console.log('resp:')
         console.log(resp)
 
-        let newList = []
-        resp.forEach(item => {
+        let tokens = resp.result || resp 
+        
+        tokens.forEach(item => {
           const itemData = {
             id: item._id,
             title: item.tokenName,
-            description: [item.chainId, getChainName(item.chainId), item.marketName],
+            description: [
+              `🔗 ID: ${item.chainId}`, 
+              `🌐 Chain: ${getChainName(item.chainId)}`, 
+              `📊 Market: ${item.marketName}`,
+              `⚙️ Type: ${item.chainType}`,
+              `💰 Coin: ${item.coinType}`,
+              `🔢 Precision: ${item.precision}`
+            ],
             content: item.address,
             actions: [
               {
@@ -186,7 +195,10 @@
         })
 
         searchList.value = newList
+      } catch (error) {
+        console.error('Error fetching token list:', error)
       }
+    }
       fetch()
 
 
