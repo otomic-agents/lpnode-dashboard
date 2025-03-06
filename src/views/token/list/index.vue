@@ -156,7 +156,7 @@
         let resp:any = await list({})
         console.log('resp:')
         console.log(resp)
-
+        let newList :any[]= []
         let tokens = resp.result || resp 
         
         tokens.forEach(item => {
