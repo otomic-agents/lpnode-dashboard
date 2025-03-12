@@ -39,8 +39,8 @@
       Step2,
       Step3,
       PageWrapper,
-      [Steps.name]: Steps,
-      [Steps.Step.name]: Steps.Step,
+      [String(Steps.name)]: Steps,
+      [(String(Steps.Step.name))]: Steps.Step,
     },
     setup() {
       const current = ref(0);

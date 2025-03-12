@@ -99,37 +99,35 @@
                           </span>
                         </div>
                       </template>
-<template v-if="item.chain_transactions && item.chain_transactions.length">
-  <div class="detail-item transactions-container">
-    <span class="label">Chain Transactions:</span>
-    <div class="value transactions-list">
-      <div class="transactions-wrapper">
-        <template v-for="(tx, index) in item.chain_transactions" :key="index">
-          <!-- 交易卡片 -->
-          <div class="transaction-item" :class="getTransactionClass(tx.event_name)">
-            <div class="transaction-header">
-              <span class="event-name">{{ tx.event_name }}</span>
-              <span class="chain-name">{{ tx.chain_name }}</span>
-            </div>
-            <div class="transaction-hash">
-              <a :href="tx.explorer_url" target="_blank" class="hash-link">
-                <span class="hash-text">{{ formatTxHash(tx.tx_hash) }}</span>
-                <Icon icon="material-symbols:open-in-new" class="external-link-icon" />
-              </a>
-            </div>
-            <div class="transaction-time">
-              {{ formatTimestamp(tx.timestamp) }}
-            </div>
-          </div>
-          <!-- 箭头 -->
-          <div v-if="index !== item.chain_transactions.length - 1" class="transaction-arrow">
-            <Icon icon="material-symbols:arrow-right-alt" />
-          </div>
-        </template>
-      </div>
-    </div>
-  </div>
-</template>
+                      <template v-if="item.chain_transactions && item.chain_transactions.length">
+                        <div class="detail-item transactions-container">
+                          <span class="label">Chain Transactions:</span>
+                          <div class="value transactions-list">
+                            <div class="transactions-wrapper">
+                              <template v-for="(tx, index) in item.chain_transactions" :key="index">
+                                <div class="transaction-item" :class="getTransactionClass(tx.event_name)">
+                                  <div class="transaction-header">
+                                    <span class="event-name">{{ tx.event_name }}</span>
+                                    <span class="chain-name">{{ tx.chain_name }}</span>
+                                  </div>
+                                  <div class="transaction-hash">
+                                    <a :href="tx.explorer_url" target="_blank" class="hash-link">
+                                      <span class="hash-text">{{ formatTxHash(tx.tx_hash) }}</span>
+                                      <Icon icon="material-symbols:open-in-new" class="external-link-icon" />
+                                    </a>
+                                  </div>
+                                  <div class="transaction-time">
+                                    {{ formatTimestamp(tx.timestamp) }}
+                                  </div>
+                                </div>
+                                <div v-if="index !== item.chain_transactions.length - 1" class="transaction-arrow">
+                                  <Icon icon="material-symbols:arrow-right-alt" />
+                                </div>
+                              </template>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
                     </a-col>
                   </a-row>
                 </div>
@@ -226,7 +224,7 @@ export default defineComponent({
         case 'TransferInRefund':
           return 'transfer-refund';
 
-     
+
         case 'InitSwap':
           return 'init-swap';
         case 'ConfirmSwap':
@@ -276,42 +274,46 @@ export default defineComponent({
         pageSize: 5,
         ammName: choosedAmm,
       });
-      console.log('resp:');
-      console.log(resp);
+      console.log('resp:', resp);
 
-      let newArr: any[] = [];
-      while (resp.pageCount * 5 > newArr.length) {
-        newArr.push({});
-      }
-
-      let i = (pageNow - 1) * 5;
-      for (let obj of resp.list) {
-        newArr[i] = {
+      if (resp.list && _.isArray(resp.list)) {
+        const newArr = resp.list.map((obj) => ({
           type: 'amm',
           market: obj.quoteInfo.assetName,
           capacity: obj.quoteInfo.capacity_num,
           nativeMarket: obj.quoteInfo.native_token_symbol,
           quoteTimestamp: obj.quoteInfo.timestamp,
-          quoteTime: (() => {
-            return new Date(obj.quoteInfo.timestamp).toLocaleString();
-          })(),
-          hedgeEnabled: (() => {
-            if (obj.hedgeEnabled == false) {
-              return 'no';
-            } else {
-              return 'yes';
-            }
-          })(),
+          quoteTime: new Date(obj.quoteInfo.timestamp).toLocaleString(),
+          hedgeEnabled: obj.hedgeEnabled === false ? 'no' : 'yes',
           gas: obj.quoteInfo.gas,
           nativePrice: obj.quoteInfo.native_token_price,
           price: obj.quoteInfo.price,
           origPrice: obj.quoteInfo.origPrice,
           swapAmount: obj.SwapInfo.inputAmount,
+        }));
+
+        showData.value = newArr;
+
+
+        pagination.value = {
+          ...pagination.value,
+          total: resp.pageCount * 5,
+          current: pageNow,
+          pageSize: 5,
+          onChange: (page: number) => {
+            pageNow = page;
+            getDate();
+          },
         };
-        i++;
+      } else {
+
+        showData.value = [];
+        pagination.value = {
+          ...pagination.value,
+          total: 0,
+          current: 1,
+        };
       }
-      showData.value = newArr;
-      console.log(newArr);
     };
 
     const getDataBusiness = async () => {
@@ -525,35 +527,42 @@ export default defineComponent({
     border-left: 4px solid #e9ecef;
 
     // 交易类型样式
-    &.transfer-out { 
+    &.transfer-out {
       border-left-color: #40a9ff;
       background-color: #e6f7ff;
     }
-    &.transfer-out-confirm { 
+
+    &.transfer-out-confirm {
       border-left-color: #1890ff;
       background-color: #f0f5ff;
     }
-    &.transfer-in { 
+
+    &.transfer-in {
       border-left-color: #52c41a;
       background-color: #f6ffed;
     }
-    &.transfer-in-confirm { 
+
+    &.transfer-in-confirm {
       border-left-color: #389e0d;
       background-color: #f0f9eb;
     }
-    &.transfer-refund { 
+
+    &.transfer-refund {
       border-left-color: #faad14;
       background-color: #fff7e6;
     }
-    &.init-swap { 
+
+    &.init-swap {
       border-left-color: #722ed1;
       background-color: #f9f0ff;
     }
-    &.confirm-swap { 
+
+    &.confirm-swap {
       border-left-color: #13c2c2;
       background-color: #e6fffb;
     }
-    &.refund-swap { 
+
+    &.refund-swap {
       border-left-color: #f5222d;
       background-color: #fff1f0;
     }

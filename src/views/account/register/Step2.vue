@@ -62,7 +62,7 @@
 </script>
 <style lang="less" scoped>
   .step2 {
-    width: 450px;
+    width: 700px;
     margin: 0 auto;
   }
 </style>
