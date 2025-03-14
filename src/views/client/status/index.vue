@@ -11,7 +11,7 @@
       <a-list>
         <a-row :gutter="16">
           <template v-for="item in pageList" :key="item.title">
-            <a-col :span="6">
+            <a-col :span="24">
               <a-list-item>
                 <a-card :hoverable="true" :class="`${prefixCls}__card`" @click="showInfo(item)">
                   <div :class="`${prefixCls}__card-title`">
@@ -76,10 +76,14 @@
 
         let newList = []
         resp.forEach(element => {
-          let iconName =  element.name == 'bsc' ? 'mingcute:bnb-line' :
-                          element.name == 'avax' ? 'mingcute:avalanche-avax-line' :
-                          element.name == 'xrp' ? 'simple-icons:xrp' :
-                          element.name == 'near' ? '' : '' ;
+          let iconName = element.name == 'bsc' ? 'token-branded:bscpad' :
+               element.name == 'avax' ? 'token-branded:avax' :
+               element.name == 'xrp' ? 'cryptocurrency:xrp' :
+               element.name == 'near' ? 'cryptocurrency:near' :
+               element.name == 'eth' ? 'token-branded:eth' :
+               element.name == 'op' ? 'token-branded:optimism' :
+               element.name == 'solana' ? 'token-branded:solana' : 
+               element.name == 'polygon' ? 'token-branded:polygon' : '';
           let clientInfo = JSON.parse(element.installContext)     
 
           newList.push({

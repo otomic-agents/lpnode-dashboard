@@ -177,8 +177,16 @@ const checker = {
       message: tokensOk ? 'Tokens configured' : 'No tokens'
     });
 
-    const dexBalance = _.get(body, 'dex_balance', []);
-    const hasValidBalance = dexBalance.length > 0 && dexBalance.every(balance => 'balanceRaw' in balance);
+    const dexBalance:any = _.get(body, 'dex_balance', []);
+    const currentTime = new Date().getTime();
+    const threeMinutesInMs = 3 * 60 * 1000; // 3 minutes in milliseconds
+
+    const hasValidBalance = dexBalance.length > 0 &&
+      dexBalance.every(balance =>
+        'balanceRaw' in balance &&
+        'lastUpdate' in balance &&
+        (currentTime - balance.lastUpdate) <= threeMinutesInMs
+      );
     checks.push({
       name: 'Wallet Balance',
       status: hasValidBalance,

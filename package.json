@@ -35,6 +35,7 @@
   "dependencies": {
     "@ant-design/colors": "^6.0.0",
     "@ant-design/icons-vue": "^6.1.0",
+    "@iconify-icons/logos": "^1.2.36",
     "@iconify/iconify": "^2.2.1",
     "@logicflow/core": "^1.1.13",
     "@logicflow/extension": "^1.1.13",
