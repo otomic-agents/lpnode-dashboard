@@ -5,6 +5,9 @@ export default {
     },
     install: {
         title: "install"
+    },
+    sendlist:{
+        title: "Send List"
     }
 
   };
