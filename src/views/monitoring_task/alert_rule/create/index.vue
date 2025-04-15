@@ -11,26 +11,23 @@
             <a-spin :spinning="metricsLoading">
               <div class="metrics-scroll-container">
                 <a-collapse v-model:activeKey="activeMetricKeys">
-                  <a-collapse-panel 
-                    v-for="metric in metrics" 
-                    :key="metric.name" 
-                    :header="`${metric.name}`"
-                  >
+                  <a-collapse-panel v-for="metric in metrics" :key="metric.name" :header="`${metric.name}`">
                     <div :class="`${prefixCls}__metric-item`">
                       <div :class="`${prefixCls}__metric-name`">
-                        <a-button type="link" size="small" @click="copyToClipboard(metric.name)">
-                          <Icon icon="material-symbols:content-copy-outline" />
-                          Copy name
-                        </a-button>
+                        <h3 class="metric-title">
+                          {{ metric.name }}
+                          <a-button type="link" size="small" @click="copyToClipboard(metric.name)" class="copy-button">
+                            <Icon icon="material-symbols:content-copy-outline" />
+                            <span class="copy-text">Copy</span>
+                          </a-button>
+                        </h3>
                       </div>
-                      
+
+
                       <div v-if="hasLabels(metric)" :class="`${prefixCls}__metric-labels`">
                         <div :class="`${prefixCls}__metric-labels-header`">Labels:</div>
-                        <div 
-                          v-for="(values, labelName) in metric.availableLabels" 
-                          :key="labelName"
-                          :class="`${prefixCls}__metric-label-item`"
-                        >
+                        <div v-for="(values, labelName) in metric.availableLabels" :key="labelName"
+                          :class="`${prefixCls}__metric-label-item`">
                           <div :class="`${prefixCls}__metric-label-name`">
                             <span>- {{ labelName }}:</span>
                             <a-button type="link" size="small" @click="copyToClipboard(labelName)">
@@ -41,11 +38,7 @@
                           <div :class="`${prefixCls}__metric-label-values`">
                             <span>Values:</span>
                             <a-space wrap>
-                              <a-tag 
-                                v-for="value in values" 
-                                :key="value"
-                                :class="`${prefixCls}__metric-label-value`"
-                              >
+                              <a-tag v-for="value in values" :key="value" :class="`${prefixCls}__metric-label-value`">
                                 {{ value }}
                                 <a-button type="link" size="small" @click.stop="copyToClipboard(value)">
                                   <Icon icon="material-symbols:content-copy-outline" />
@@ -62,7 +55,8 @@
                         <div :class="`${prefixCls}__metric-example-header`">Example:</div>
                         <div :class="`${prefixCls}__metric-example-code`">
                           <code>getLatestMetric('{{ metric.name }}'{{ hasLabels(metric) ? ', {' : '' }}{{ formatLabelsExample(metric.availableLabels) }}{{ hasLabels(metric) ? '}' : '' }})</code>
-                          <a-button type="link" size="small" @click="copyToClipboard(`getLatestMetric('${metric.name}'${hasLabels(metric) ? ', {' + formatLabelsExample(metric.availableLabels) + '}' : ''})`)">
+                          <a-button type="link" size="small"
+                            @click="copyToClipboard(`getLatestMetric('${metric.name}'${hasLabels(metric) ? ', {' + formatLabelsExample(metric.availableLabels) + '}' : ''})`)">
                             <Icon icon="material-symbols:content-copy-outline" />
                             Copy
                           </a-button>
@@ -136,11 +130,11 @@ const tabStore = useMultipleTabStore();
 const { createMessage, createErrorModal } = useMessage();
 const isLoading = ref(false);
 const isSubmitting = ref(false);
-const metrics:any = ref([]);
+const metrics: any = ref([]);
 const metricsLoading = ref(false);
-const activeMetricKeys:any = ref([]);
+const activeMetricKeys: any = ref([]);
 
-let editorView:any = null;
+let editorView: any = null;
 
 const ruleForm = reactive({
   name: '',
@@ -256,14 +250,14 @@ const hasLabels = (metric) => {
 const formatLabelsExample = (labels) => {
   if (!labels || Object.keys(labels).length === 0) return '';
   return Object.entries(labels)
-    .map(([key, values]:[any,any]) => `${key}: '${values[0]}'`)
+    .map(([key, values]: [any, any]) => `${key}: '${values[0]}'`)
     .join(', ');
 };
 
 const fetchMetrics = async () => {
   metricsLoading.value = true;
   try {
-    const response:any = await getAllMetrics();
+    const response: any = await getAllMetrics();
     if (response && Array.isArray(response)) {
       metrics.value = response;
       if (metrics.value.length > 0) {
@@ -292,7 +286,7 @@ const handleSubmit = async () => {
     await validate();
     isSubmitting.value = true;
     const formValues = getFieldsValue();
-    const formData:any = {
+    const formData: any = {
       ...formValues,
       expression: ruleForm.expression,
     };
@@ -320,14 +314,14 @@ const handleSubmit = async () => {
 function myCompletions(context) {
   const word = context.matchBefore(/[\w\.$]+/);
   if (!word || (word.from === word.to && !context.explicit)) return null;
-  
+
   const text = word.text.toLowerCase();
   const filtered = customCompletions.filter(item =>
     item.label.toLowerCase().includes(text)
   );
-  
+
   if (filtered.length === 0) return null;
-  
+
   return {
     from: word.from,
     options: filtered.map(item => ({
@@ -393,6 +387,27 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="less" scoped>
+.metric-title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #111827;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-button {
+  padding: 2px 8px;
+  height: auto;
+  font-size: 12px;
+}
+
+.copy-text {
+  margin-left: 4px;
+}
+
 .create-rule {
   &__container {
     background-color: #fff;
@@ -479,4 +494,3 @@ onBeforeUnmount(() => {
   padding: 0 !important;
 }
 </style>
-

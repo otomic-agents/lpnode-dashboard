@@ -2,64 +2,67 @@
   <PageWrapper :class="prefixCls" title="Alert History">
     <div :class="`${prefixCls}__container`">
       <!-- Alert history list -->
-      <a-list>
-        <template v-for="item in alertsList" :key="item._id.$oid">
-          <a-list-item :class="`${prefixCls}__list-item`">
-            <a-card :class="`${prefixCls}__card`" :bordered="false" :hoverable="true">
-              <div :class="`${prefixCls}__card-header`">
-                <h3 :class="`${prefixCls}__title`">
-                  <Icon icon="material-symbols:notifications-active" :class="`${prefixCls}__title-icon`" />
-                  {{ item.ruleName }}
-                </h3>
-                <div :class="`${prefixCls}__tags`">
-                  <Tag :class="`${prefixCls}__tag`" :color="getSeverityColor(item.severity)">
-                    {{ item.severity }}
-                  </Tag>
-                  <Tag :class="`${prefixCls}__tag`" :color="getStatusColor(item.triggered)">
-                    {{ item.triggered ? 'Active' : 'Resolved' }}
-                  </Tag>
-                  <Tag :class="`${prefixCls}__tag`" color="blue">
-                    Threshold: {{ item.condition }} {{ item.threshold }}
-                  </Tag>
-                  <Tag :class="`${prefixCls}__tag`" :color="item.isErrorAlert ? 'red' : 'default'">
-                    {{ item.isErrorAlert ? 'Error Alert' : 'Value Alert' }}
-                  </Tag>
+      <template v-if="alertsList.length > 0">
+        <a-list>
+          <template v-for="item in alertsList" :key="item._id.$oid">
+            <a-list-item :class="`${prefixCls}__list-item`">
+              <a-card :class="`${prefixCls}__card`" :bordered="false" :hoverable="true">
+                <div :class="`${prefixCls}__card-header`">
+                  <h3 :class="`${prefixCls}__title`">
+                    <Icon icon="material-symbols:notifications-active" :class="`${prefixCls}__title-icon`" />
+                    {{ item.ruleName }}
+                  </h3>
+                  <div :class="`${prefixCls}__tags`">
+                    <Tag :class="`${prefixCls}__tag`" :color="getSeverityColor(item.severity)">
+                      {{ item.severity }}
+                    </Tag>
+                    <Tag :class="`${prefixCls}__tag`" :color="getStatusColor(item.triggered)">
+                      {{ item.triggered ? 'Active' : 'Resolved' }}
+                    </Tag>
+                    <Tag :class="`${prefixCls}__tag`" color="blue">
+                      Threshold: {{ item.condition }} {{ item.threshold }}
+                    </Tag>
+                    <Tag :class="`${prefixCls}__tag`" :color="item.isErrorAlert ? 'red' : 'default'">
+                      {{ item.isErrorAlert ? 'Error Alert' : 'Value Alert' }}
+                    </Tag>
+                  </div>
                 </div>
-              </div>
 
-              <div :class="`${prefixCls}__description`">
-                {{ item.description }}
-              </div>
+                <div :class="`${prefixCls}__description`">
+                  {{ item.description }}
+                </div>
 
-              <div :class="`${prefixCls}__value-section`">
-                <div :class="`${prefixCls}__value-header`">
-                  <Icon icon="mdi:chart-line" :class="`${prefixCls}__value-icon`" />
-                  Alert Value
+                <div :class="`${prefixCls}__value-section`">
+                  <div :class="`${prefixCls}__value-header`">
+                    <Icon icon="mdi:chart-line" :class="`${prefixCls}__value-icon`" />
+                    Alert Value
+                  </div>
+                  <div :class="`${prefixCls}__value-content`">
+                    <pre>{{ formatValue(item.value) }}</pre>
+                  </div>
                 </div>
-                <div :class="`${prefixCls}__value-content`">
-                  <pre>{{ formatValue(item.value) }}</pre>
-                </div>
-              </div>
 
-              <div :class="`${prefixCls}__time-info`">
-                <div :class="`${prefixCls}__time-item`">
-                  <Icon icon="material-symbols:calendar-today" :class="`${prefixCls}__time-icon`" />
-                  Created: {{ formatDate(item.createdAt.$date) }}
+                <div :class="`${prefixCls}__time-info`">
+                  <div :class="`${prefixCls}__time-item`">
+                    <Icon icon="material-symbols:calendar-today" :class="`${prefixCls}__time-icon`" />
+                    Created: {{ formatDate(item.createdAt.$date) }}
+                  </div>
+                  <div v-if="item.lastNotifiedAt" :class="`${prefixCls}__time-item`">
+                    <Icon icon="material-symbols:notifications" :class="`${prefixCls}__time-icon`" />
+                    Last Notified: {{ formatDate(item.lastNotifiedAt.$date) }}
+                  </div>
                 </div>
-                <div v-if="item.lastNotifiedAt" :class="`${prefixCls}__time-item`">
-                  <Icon icon="material-symbols:notifications" :class="`${prefixCls}__time-icon`" />
-                  Last Notified: {{ formatDate(item.lastNotifiedAt.$date) }}
-                </div>
-              </div>
-            </a-card>
-          </a-list-item>
-        </template>
-      </a-list>
-      <a-empty v-if="alertsList.length === 0" :class="`${prefixCls}__empty`" description="No alerts found" />
+              </a-card>
+            </a-list-item>
+          </template>
+        </a-list>
+      </template>
+      <a-empty v-else-if="!isLoading" :class="`${prefixCls}__empty`" description="No alerts found" />
     </div>
     <Loading :loading="isLoading" />
   </PageWrapper>
 </template>
+
 
 <script lang="ts">
 import { Tag, Card, Button, Empty } from 'ant-design-vue';
