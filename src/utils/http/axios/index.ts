@@ -259,8 +259,16 @@ export const defHttp = createAxios();
 export const lpHttp = createAxios({
   requestOptions: {
     // apiUrl: 'https://48fcf1da.jksdgb.snowinning.com',
-    apiUrl: `https://${window.location.host}`,
+    // apiUrl: `https://${window.location.host}`,
     // apiUrl: 'https://48fcf1da.magicdog.olares.com',
     urlPrefix: '',
+  },
+});
+export const metricsHttp = createAxios({
+  requestOptions: {
+    // apiUrl: 'https://48fcf1da.jksdgb.snowinning.com',
+    apiUrl: `https://${window.location.host}`,
+    // apiUrl: 'https://48fcf1da.magicdog.olares.com',
+    urlPrefix: '/lpnode/alert_systems/metrics',
   },
 });

@@ -210,7 +210,7 @@ export default defineComponent({
                 dataIndex: 'txHash',
                 key: 'txHash',
                 width: 150,
-                ellipsis: true,  // 添加这个属性
+                ellipsis: true,  
             },
             {
                 title: 'Gas Price',

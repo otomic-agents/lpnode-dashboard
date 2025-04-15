@@ -7,4 +7,4 @@ export const ChainLogos :Record<string, string> = {
   
 export default ChainLogos;
 
-export const DEFAULT_CHAIN_LOGO = 'data:image/png;base64,...默认logo的base64编码...';
+export const DEFAULT_CHAIN_LOGO = 'data:image/png;base64,... logo base64...';

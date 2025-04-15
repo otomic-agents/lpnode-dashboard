@@ -6,4 +6,18 @@ export default {
   create: {
     title: 'Create',
   },
+  alert_rule: {
+    list: {
+      title: 'Alert Rules',
+    },
+    create: {
+      title: 'Create Alert Rule',
+    },
+    panel: {
+      title: "Panel"
+    }
+  },
+  alert_history: {
+    title: 'Alert History',
+  },
 };

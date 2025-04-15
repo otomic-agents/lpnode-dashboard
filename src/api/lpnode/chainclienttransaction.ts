@@ -1,4 +1,4 @@
-import { lpHttp } from '/@/utils/http/axios';  // 使用lpHttp
+import { lpHttp } from '/@/utils/http/axios';  
 import { 
   TransactionItem, 
   SendRecord, 

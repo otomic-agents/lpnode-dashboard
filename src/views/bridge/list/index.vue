@@ -88,9 +88,9 @@ import { PageWrapper } from '/@/components/Page';
 import { list, deleteBridge } from '/@/api/lpnode/bridge';
 import { DeleteParams } from '/@/api/lpnode/model/bridgeModel';
 import { useMessage } from '/@/hooks/web/useMessage';
-import { ChainLogos, DEFAULT_CHAIN_LOGO } from '/@/assets/chainLogos'; // 引入 ChainLogos 和 DEFAULT_CHAIN_LOGO
+import { ChainLogos, DEFAULT_CHAIN_LOGO } from '/@/assets/chainLogos'; 
 
-// 链 ID 到链名称的映射
+
 const CHAIN_ID_TO_NAME: { [key: number]: string } = {
   9006: 'BSC',
   501: 'Solana',
@@ -98,7 +98,7 @@ const CHAIN_ID_TO_NAME: { [key: number]: string } = {
   614: 'Optimism',
 };
 
-// 链名称到 Logo 的映射
+
 const CHAIN_NAME_TO_LOGO: { [key: string]: string } = {
   BSC: ChainLogos.BSC,
   Solana: ChainLogos.Solana,
@@ -140,12 +140,12 @@ export default defineComponent({
     const { createMessage } = useMessage();
     const pageList = ref<any[]>([]);
 
-    // 根据链 ID 获取链名称
+
     const getChainName = (chainId: number): string => {
       return CHAIN_ID_TO_NAME[chainId] || 'Unknown';
     };
 
-    // 根据链 ID 获取链 Logo
+
     const getChainLogo = (chainId: number): string => {
       const chainName = getChainName(chainId);
       return CHAIN_NAME_TO_LOGO[chainName] || DEFAULT_CHAIN_LOGO;
@@ -173,8 +173,8 @@ export default defineComponent({
         icon: 'material-symbols:account-balance-wallet-outline',
         color: '#1890ff',
         amm: item.ammName,
-        srcChainRawId: item.srcChainRawId, // 源链 ID
-        dstChainRawId: item.dstChainRawId, // 目标链 ID
+        srcChainRawId: item.srcChainRawId,
+        dstChainRawId: item.dstChainRawId,
         srcToken: item.srcToken,
         dstToken: item.dstToken,
         receiver: item.lpReceiverAddress,
@@ -364,7 +364,7 @@ export default defineComponent({
   }
 }
 
-// 响应式布局
+
 @media screen and (max-width: 1400px) {
   .list-card {
     &__card {
@@ -425,7 +425,7 @@ export default defineComponent({
   }
 }
 
-// 暗色主题
+
 [data-theme='dark'] {
   .list-card {
     &__card {

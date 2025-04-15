@@ -455,22 +455,22 @@ export default defineComponent({
 
         margin-bottom: 10px;
         line-height: 1.6;
-        display: flex; // 新增
-        align-items: center; // 新增
+        display: flex; 
+        align-items: center; 
 
         .label {
           font-weight: 500;
           color: #666;
           margin-right: 8px;
-          min-width: 100px; // 新增
+          min-width: 100px;
         }
 
         .value {
           color: #333;
-          display: flex; // 新增
-          align-items: center; // 新增
-          flex-wrap: wrap; // 新增
-          gap: 8px; // 新增
+          display: flex; 
+          align-items: center; 
+          flex-wrap: wrap; 
+          gap: 8px; 
         }
       }
     }
