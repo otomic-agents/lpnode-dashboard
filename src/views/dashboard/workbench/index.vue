@@ -526,7 +526,6 @@ export default defineComponent({
     background-color: #f8f9fa;
     border-left: 4px solid #e9ecef;
 
-    // 交易类型样式
     &.transfer-out {
       border-left-color: #40a9ff;
       background-color: #e6f7ff;
@@ -624,7 +623,6 @@ export default defineComponent({
   }
 }
 
-// 滚动条样式
 .transactions-list {
   &::-webkit-scrollbar {
     height: 6px;

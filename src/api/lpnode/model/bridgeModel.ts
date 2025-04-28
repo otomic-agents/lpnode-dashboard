@@ -3,15 +3,20 @@ export interface ListParams {
 }
 
 export interface BridgeInfo {
+    _id:string;
     bridgeName: string;
     srcChainId: string;
     dstChainId: string;
     srcTokenId: string;
     dstTokenId: string;
+    srcToken:string;
+    dstToken:string;
     walletId: string;
     srcWalletId: string;
     receiveAddress: string;
     ammName: string;
+    srcChainRawId:string;
+    dstChainRawId:string
 }
 
 export interface ListModel {
