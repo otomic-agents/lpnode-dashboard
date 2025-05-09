@@ -472,6 +472,14 @@ export default defineComponent({
 				const initialBalances = {
 					source: {
 						token: getSourceTokenName(),
+						tokenAddress: (() => {
+							if (!props.selectedBridge) return '';
+							return props.selectedBridge.srcToken || '';
+						})(),
+						chainId: (() => {
+							if (!props.selectedBridge) return null;
+							return props.selectedBridge.srcChainRawId || null;
+						})(),
 						cex: getSourceCexBalance(),
 						dex: getSourceDexBalance(),
 						total: Number(getSourceCexBalance()) + Number(getSourceDexBalance()),
@@ -480,6 +488,14 @@ export default defineComponent({
 					},
 					destination: {
 						token: getDestTokenName(),
+						tokenAddress: (() => {
+							if (!props.selectedBridge) return '';
+							return props.selectedBridge.dstToken || '';
+						})(),
+						chainId: (() => {
+							if (!props.selectedBridge) return null;
+							return props.selectedBridge.dstChainRawId || null;
+						})(),
 						cex: getDestCexBalance(),
 						dex: getDestDexBalance(),
 						total: Number(getDestCexBalance()) + Number(getDestDexBalance()),

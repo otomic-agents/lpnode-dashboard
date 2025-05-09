@@ -15,8 +15,8 @@
             
             <template #action="{ record }">
               <a-space>
-                <a @click="viewWalletInfo(record.id)">View Balance</a>
-                <a-divider type="vertical" />
+                <!-- <a @click="viewWalletInfo(record.id)">View Balance</a> -->
+                <!-- <a-divider type="vertical" /> -->
                 <a-popconfirm
                   title="Are you sure to delete this account?"
                   @confirm="handleDelete(record.id)"
@@ -117,10 +117,7 @@
       const goToCreate = () => {
         router.push('/hedge-account/create');
       };
-  
-      const viewWalletInfo = (id: string) => {
-        router.push(`/hedge-account/${id}/wallet`);
-      };
+
   
       const handleDelete = async (id: string) => {
         loading.value = true;
@@ -145,7 +142,6 @@
         accountList,
         columns,
         goToCreate,
-        viewWalletInfo,
         handleDelete,
         getStatusColor,
       };

@@ -8,6 +8,7 @@
               <h1>CEX Assets</h1>
               <div class="account-info">
                 <span>Monitoring: {{ totalAccounts }} accounts</span>
+                <span class="total-value">Total Value: ${{ formatNumber(totalUsdValue) }}</span>
               </div>
             </div>
             <div class="overview-actions">
@@ -31,6 +32,9 @@
                 <span class="account-name">{{ account.name }}</span>
                 <span class="exchange-name">({{ account.exchange }})</span>
               </div>
+              <div class="account-value">
+                <span>Total Value: ${{ formatNumber(getAccountTotalValue(account)) }}</span>
+              </div>
             </div>
 
             <a-divider style="margin: 12px 0" />
@@ -49,7 +53,12 @@
                     <div class="balance-locked" v-if="parseFloat(token.locked) > 0">
                       Locked: {{ token.locked }} {{ token.asset }}
                     </div>
-                    <div class="balance-total">Total: {{ token.total }} {{ token.asset }}</div>
+                    <div class="balance-usd" v-if="token.usdValue && parseFloat(token.usdValue) > 0">
+                      Usd Value: ${{ formatNumber(token.usdValue) }}
+                    </div>
+                    <div class="balance-usd-unavailable" v-else>
+                      Usd Value: Not available
+                    </div>
                   </div>
                 </div>
               </div>
@@ -78,6 +87,7 @@ import { PageWrapper } from '/@/components/Page';
 import { Card, Empty, Divider, Button, Checkbox } from 'ant-design-vue';
 import { ReloadOutlined } from '@ant-design/icons-vue';
 import { listCexAccounts, getAllCexTokenBalances } from '/@/api/lpnode/CexAccount';
+import { getAllMarketPrices } from '/@/api/lpnode/MarketPrice';
 import { message } from 'ant-design-vue';
 import TokenLogo from '/@/views/token-logo/index.vue';
 import ExchangeLogo from '/@/views/exchange-logo/index.vue';
@@ -87,6 +97,12 @@ interface TokenBalance {
   free: string;
   locked: string;
   total: string;
+  usdValue: string;
+}
+
+interface TokenPrice {
+  symbol: string;
+  price: number;
 }
 
 interface CexAccount {
@@ -117,6 +133,8 @@ export default defineComponent({
     const cexAccounts = ref<CexAccount[]>([]);
     const hideZeroBalance = ref(false);
     const loading = ref(false);
+    const marketPrices = ref<TokenPrice[]>([]);
+    const totalUsdValue = ref(0);
 
     const formatLastUpdated = computed(() => {
       if (!lastUpdated.value) return 'Unknown';
@@ -134,10 +152,68 @@ export default defineComponent({
       return updateTime.toLocaleDateString();
     });
 
+    const formatNumber = (value: string | number) => {
+      if (typeof value === 'string') {
+        value = parseFloat(value);
+      }
+      
+      if (isNaN(value)) return '0.00';
+      
+      // Format with commas and 2 decimal places
+      return value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    };
+
+    const getTokenPrice = (symbol: string): number => {
+      const token = marketPrices.value.find(
+        (p) => p.symbol.toUpperCase() === symbol.toUpperCase()
+      );
+      return token ? token.price : 0;
+    };
+
+    const calculateTokenUsdValue = (token: TokenBalance): string => {
+      const price = getTokenPrice(token.asset);
+      const totalAmount = parseFloat(token.total || '0');
+      
+      // Only return a value if we have a valid price and amount
+      if (price > 0 && !isNaN(totalAmount)) {
+        return (price * totalAmount).toString();
+      }
+      
+      // Return empty string instead of '0' when no price data is available
+      return '';
+    };
+
+    const getAccountTotalValue = (account: CexAccount): number => {
+      if (!account.tokens || !account.tokens.length) return 0;
+      
+      return account.tokens.reduce((sum, token) => {
+        return sum + parseFloat(token.usdValue || '0');
+      }, 0);
+    };
+
+    // Fetch market prices
+    const fetchMarketPrices = async () => {
+      try {
+        const prices = await getAllMarketPrices();
+        if (prices) {
+          marketPrices.value = prices;
+        }
+      } catch (error) {
+        console.error('Error fetching market prices:', error);
+        message.error('Failed to fetch market prices');
+      }
+    };
+
     // Fetch all CEX accounts and their tokens
     const fetchAssets = async () => {
       try {
         loading.value = true;
+
+        // First get market prices
+        await fetchMarketPrices();
 
         // Get all CEX accounts
         const accountsResponse = await listCexAccounts();
@@ -152,17 +228,25 @@ export default defineComponent({
         
         // Process each account to get tokens
         const accountsWithTokens: CexAccount[] = [];
+        let overallTotalValue = 0;
 
         for (const account of accounts) {
           try {
             const tokensResponse = await getAllCexTokenBalances(account.id);
             
             if (tokensResponse) {
-              const tokens = tokensResponse;
+              const tokens = tokensResponse.map(token => {
+                // Calculate USD value for each token
+                const usdValue = calculateTokenUsdValue(token);
+                return {
+                  ...token,
+                  usdValue
+                };
+              });
 
               // Filter tokens based on settings
               const filteredTokens = tokens.filter(token => {
-                const balance = parseFloat(token.total);
+                const balance = parseFloat(token.free);
                 
                 if (hideZeroBalance.value && balance === 0) {
                   return false;
@@ -175,6 +259,13 @@ export default defineComponent({
                 ...account,
                 tokens: filteredTokens
               });
+
+              // Add to total USD value
+              const accountValue = filteredTokens.reduce(
+                (sum, token) => sum + parseFloat(token.usdValue || '0'), 
+                0
+              );
+              overallTotalValue += accountValue;
             }
           } catch (error) {
             console.error(`Error fetching tokens for account ${account.id}:`, error);
@@ -182,6 +273,7 @@ export default defineComponent({
         }
 
         cexAccounts.value = accountsWithTokens;
+        totalUsdValue.value = overallTotalValue;
         lastUpdated.value = new Date().toISOString();
         
       } catch (error) {
@@ -216,6 +308,9 @@ export default defineComponent({
       formatLastUpdated,
       refreshAssets,
       handleFilterChange,
+      formatNumber,
+      getAccountTotalValue,
+      totalUsdValue
     };
   },
 });
@@ -245,7 +340,12 @@ export default defineComponent({
 .account-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
+}
+
+.total-value {
+  font-weight: bold;
+  color: #52c41a;
 }
 
 .overview-actions {
@@ -285,6 +385,11 @@ export default defineComponent({
 
 .exchange-name {
   color: rgba(0, 0, 0, 0.65);
+}
+
+.account-value {
+  font-weight: bold;
+  color: #52c41a;
 }
 
 .token-list {
@@ -327,8 +432,14 @@ export default defineComponent({
   color: #faad14;
 }
 
-.balance-total {
-  font-weight: 500;
+.balance-usd {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.balance-usd-unavailable {
+  color: #d9d9d9;
+  font-style: italic;
 }
 
 .no-assets {
