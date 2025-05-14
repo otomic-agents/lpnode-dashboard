@@ -10,6 +10,9 @@
               {{ value.status }}
             </Tag>
           </div>
+          <div v-if="value.description" class="metric-description">
+            {{ value.description }}
+          </div>
           <div class="metric-value">
             {{ value.value }}
             <span v-if="value.additionalData" class="metric-threshold">
@@ -259,5 +262,13 @@ export default defineComponent({
   border-left: 1px dashed #d9d9d9;
   width: 100%;
   box-sizing: border-box;
+}
+.metric-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-style: italic;
+  line-height: 1.4;
+  padding-left: 2px;
 }
 </style>

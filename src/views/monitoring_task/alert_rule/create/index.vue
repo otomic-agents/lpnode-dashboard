@@ -79,6 +79,23 @@
               Write JavaScript expression that returns a numeric value to be evaluated
             </div>
           </div>
+          <div :class="`${prefixCls}__code-editor-actions`">
+            <a-button type="primary" @click="handleRunExpression" :loading="isRunning">
+              <Icon icon="material-symbols:play-arrow" :class="`${prefixCls}__btn-icon`" />
+              Run
+            </a-button>
+          </div> 
+          <!-- Add this after the code editor container div -->
+           <div v-if="expressionResult" :class="`${prefixCls}__expression-result`">
+            <a-card title="execute result" :bordered="false">
+              <template #extra>
+                <a-tag color="blue">{{ new Date().toLocaleString() }}</a-tag>
+              </template>
+              <div :class="`${prefixCls}__expression-result-content`">
+                <pre>{{ typeof expressionResult === 'object' ? JSON.stringify(expressionResult, null, 2) : expressionResult }}</pre>
+              </div>
+            </a-card>
+          </div>
         </template>
 
         <!-- Form Buttons -->
@@ -119,6 +136,7 @@ import { createRule } from '/@/api/lpnode/rules';
 import { useMultipleTabStore } from '/@/store/modules/multipleTab';
 import { customCompletions } from './customCompletions';
 import { getAllMetrics } from '/@/api/lpnode/metrics';
+import { runExpression } from '/@/api/lpnode/monitoring';
 import { closeBrackets, autocompletion } from '@codemirror/autocomplete';
 import { themeConfig } from './themeConfig';
 import { Highlighting } from './highlighting';
@@ -134,7 +152,39 @@ const metrics: any = ref([]);
 const metricsLoading = ref(false);
 const activeMetricKeys: any = ref([]);
 
+const isRunning = ref(false);
+const expressionResult = ref(null);
+
 let editorView: any = null;
+
+const handleRunExpression = async () => {
+  if (!ruleForm.expression || ruleForm.expression.trim() === '') {
+    createMessage.error('Expression cannot be empty');
+    return;
+  }
+
+  isRunning.value = true;
+  expressionResult.value = null;
+
+  try {
+    // Call the runExpression API function
+    const response:any = await runExpression({
+      expression: ruleForm.expression,
+    });
+
+    if (response) {
+      expressionResult.value = response;
+      createMessage.success('Expression executed successfully');
+    } else {
+      createMessage.error(`Failed to execute expression`);
+    }
+  } catch (error: any) {
+    console.error('Failed to run expression:', error);
+    createMessage.error('Failed to run expression: ' + (error.message || 'Unknown error'));
+  } finally {
+    isRunning.value = false;
+  }
+};
 
 const ruleForm = reactive({
   name: '',
@@ -283,6 +333,7 @@ const fetchMetrics = async () => {
 
 const handleSubmit = async () => {
   try {
+    setFieldsValue({ expression: ruleForm.expression });
     await validate();
     isSubmitting.value = true;
     const formValues = getFieldsValue();
@@ -290,7 +341,7 @@ const handleSubmit = async () => {
       ...formValues,
       expression: ruleForm.expression,
     };
-
+    
     if (!formData.expression || formData.expression.trim() === '') {
       createMessage.error('Expression cannot be empty');
       isSubmitting.value = false;
@@ -481,9 +532,38 @@ onBeforeUnmount(() => {
     gap: 6px;
   }
 
-  &__btn-icon {
-    margin-right: 6px;
-  }
+    &__btn-icon {
+      margin-right: 6px;
+    }
+  
+    &__expression-result {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+  
+    &__expression-result-content {
+      max-height: 300px;
+      overflow: auto;
+    }
+  
+    &__expression-result-content pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  
+    :deep(.ant-card-head) {
+      min-height: 48px;
+      padding: 0 16px;
+      background-color: #f5f5f5;
+    }
+  
+    :deep(.ant-card-body) {
+      padding: 16px;
+    }
 }
 
 :deep(.ant-form-item-label) {
@@ -493,4 +573,6 @@ onBeforeUnmount(() => {
 :deep(.ant-collapse-content-box) {
   padding: 0 !important;
 }
+
+
 </style>

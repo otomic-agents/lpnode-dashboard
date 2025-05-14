@@ -238,15 +238,36 @@ const checker = {
     });
 
     let allSymbolsOk = true;
+    console.log('Starting to check all trading pair data...');
+    console.log(`Current timestamp: ${new Date().getTime()}, Current time: ${new Date().toISOString()}`);
+
     symbolList.forEach((symbol) => {
-      console.log(symbol)
+      console.log(`Checking trading pair: ${symbol}`);
       const symbolOrderbook = orderbook[symbol];
+
       if (symbolOrderbook) {
         const updateTime = _.get(symbolOrderbook, 'timestamp');
-        const dataFresh = new Date().getTime() - updateTime <= 1000 * 60 * 3;
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - updateTime;
+        const dataFresh = timeDiff <= 1000 * 60 * 3; // 3 minutes
+
+        console.log(`  - Orderbook information for trading pair ${symbol}:`);
+        console.log(`    - Update timestamp: ${updateTime}, Update time: ${new Date(updateTime).toISOString()}`);
+        console.log(`    - Time difference: ${timeDiff}ms (${Math.round(timeDiff / 1000)} seconds)`);
+        console.log(`    - Is data fresh: ${dataFresh ? 'Yes' : 'No'} (Threshold: 180 seconds)`);
+
+        if (!dataFresh) {
+          console.log(`    - Warning: Data for ${symbol} is outdated!`);
+        }
+
         allSymbolsOk = allSymbolsOk && dataFresh;
+      } else {
+        console.log(`  - Error: Cannot find orderbook data for trading pair ${symbol}!`);
+        allSymbolsOk = false;
       }
     });
+
+    console.log(`All trading pairs check result: ${allSymbolsOk ? 'All normal' : 'Abnormalities exist'}`);
 
     checks.push({
       name: 'Market Data Status',
