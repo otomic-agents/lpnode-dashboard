@@ -27,7 +27,7 @@
           <a-card v-for="chain in chainAssets" :key="chain.chainId" class="mb-4 chain-card">
             <div class="chain-header">
               <div class="chain-info">
-                <ChainLogo :symbol="chain.chainName" size="small" />
+                <ChainLogo :symbol="chain.chainName" size="small" :isChain="true" />
                 <span class="chain-name">{{ chain.chainName }}</span>
               </div>
               <div class="chain-value">
@@ -52,7 +52,7 @@
                   <div v-for="(token, tokenIndex) in address.tokens" :key="tokenIndex" class="token-item">
                     <div class="token-info">
                       <span class="token-symbol">
-                        <ChainLogo :symbol="token.symbol" size="small" class="token-logo-small" />
+                        <ChainLogo :symbol="token.symbol" size="small" class="token-logo-small" :isChain="false" />
                         {{ token.symbol }}
                         <span v-if="token.isNative">({{ chain.nativeToken }})</span>
                       </span>
@@ -90,6 +90,7 @@
     </div>
   </PageWrapper>
 </template>
+
 
 
 <script lang="ts">
