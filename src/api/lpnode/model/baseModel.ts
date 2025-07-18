@@ -6,6 +6,7 @@ export interface DeploayItem {
     status: number;
     yaml: string;
     statusBody:string;
+    rpc?:string;
 }
 
 export interface ListParams {

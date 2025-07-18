@@ -49,3 +49,12 @@ export interface ListModel {
   data: TaskInfo[];
   message: string;
 }
+export interface RunExpressionParams {
+  expression: string;
+}
+
+export interface RunExpressionModel {
+  result: any;
+  executionTime?: number;
+  timestamp?: string;
+}

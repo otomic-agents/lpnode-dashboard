@@ -16,7 +16,7 @@ const client: AppRouteModule = {
   children: [
     {
       path: 'list',
-      name: t('routes.monitoring_task.list.title'),
+      name: 'Monitoring_Task_List',
       component: () => import('/@/views/monitoring_task/list/index.vue'),
       meta: {
         title: t('routes.monitoring_task.list.title'),
@@ -24,12 +24,48 @@ const client: AppRouteModule = {
     },
     {
       path: 'create',
-      name: t('routes.monitoring_task.create.title'),
+      name: 'Monitoring_Task_Create',
       component: () => import('/@/views/monitoring_task/create/index.vue'),
       meta: {
         title: t('routes.monitoring_task.create.title'),
       },
     },
+
+    {
+      path: 'panel',
+      name: 'Monitoring_Panel',
+      component: () => import('/@/views/monitoring_task/panel/index.vue'),
+      meta: {
+        title: t('routes.monitoring_task.alert_rule.panel.title'),
+      },
+    },
+    {
+      path: 'alert-history',
+      name: 'Alert_History',
+      component: () => import('/@/views/monitoring_task/alert_history/index.vue'),
+      meta: {
+        title: t('routes.monitoring_task.alert_history.title'),
+      },
+    },
+    {
+      path: 'alert-rule/list',
+      name: 'Alert_Rule_List',
+      component: () => import('/@/views/monitoring_task/alert_rule/list/index.vue'),
+      meta: {
+        title: t('routes.monitoring_task.alert_rule.list.title')
+      },
+    },
+    {
+      path: 'alert-rule/create',
+      name: 'Alert_Rule_Create',
+      component: () => import('/@/views/monitoring_task/alert_rule/create/index.vue'),
+      meta: {
+        title: t('routes.monitoring_task.alert_rule.create.title'),
+        hideMenu:true,
+      },
+    },
+
+
   ],
 };
 

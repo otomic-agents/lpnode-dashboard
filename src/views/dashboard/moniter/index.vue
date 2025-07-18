@@ -141,14 +141,6 @@ const checker = {
       message: heightSync ? 'Synchronized' : 'Not synchronized'
     });
 
-    const watcherList = _.get(body, 'monitorInfo.watcher', []);
-    const watchersOk = watcherList.length >= 5;
-    checks.push({
-      name: 'Watcher Nodes',
-      status: watchersOk,
-      message: watchersOk ? 'Sufficient watchers' : 'Insufficient watchers'
-    });
-
     const allPassed = checks.every(check => check.status);
     return { checks, allPassed };
   },
@@ -185,8 +177,16 @@ const checker = {
       message: tokensOk ? 'Tokens configured' : 'No tokens'
     });
 
-    const dexBalance = _.get(body, 'dex_balance', []);
-    const hasValidBalance = dexBalance.length > 0 && dexBalance.every(balance => 'balanceRaw' in balance);
+    const dexBalance:any = _.get(body, 'dex_balance', []);
+    const currentTime = new Date().getTime();
+    const threeMinutesInMs = 3 * 60 * 1000; // 3 minutes in milliseconds
+
+    const hasValidBalance = dexBalance.length > 0 &&
+      dexBalance.every(balance =>
+        'balanceRaw' in balance &&
+        'lastUpdate' in balance &&
+        (currentTime - balance.lastUpdate) <= threeMinutesInMs
+      );
     checks.push({
       name: 'Wallet Balance',
       status: hasValidBalance,
@@ -238,16 +238,36 @@ const checker = {
     });
 
     let allSymbolsOk = true;
+    console.log('Starting to check all trading pair data...');
+    console.log(`Current timestamp: ${new Date().getTime()}, Current time: ${new Date().toISOString()}`);
+
     symbolList.forEach((symbol) => {
+      console.log(`Checking trading pair: ${symbol}`);
       const symbolOrderbook = orderbook[symbol];
+
       if (symbolOrderbook) {
         const updateTime = _.get(symbolOrderbook, 'timestamp');
-        const dataFresh = new Date().getTime() - updateTime <= 1000 * 60 * 3;
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - updateTime;
+        const dataFresh = timeDiff <= 1000 * 60 * 3; // 3 minutes
+
+        console.log(`  - Orderbook information for trading pair ${symbol}:`);
+        console.log(`    - Update timestamp: ${updateTime}, Update time: ${new Date(updateTime).toISOString()}`);
+        console.log(`    - Time difference: ${timeDiff}ms (${Math.round(timeDiff / 1000)} seconds)`);
+        console.log(`    - Is data fresh: ${dataFresh ? 'Yes' : 'No'} (Threshold: 180 seconds)`);
+
+        if (!dataFresh) {
+          console.log(`    - Warning: Data for ${symbol} is outdated!`);
+        }
+
         allSymbolsOk = allSymbolsOk && dataFresh;
       } else {
+        console.log(`  - Error: Cannot find orderbook data for trading pair ${symbol}!`);
         allSymbolsOk = false;
       }
     });
+
+    console.log(`All trading pairs check result: ${allSymbolsOk ? 'All normal' : 'Abnormalities exist'}`);
 
     checks.push({
       name: 'Market Data Status',

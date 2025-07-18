@@ -3,6 +3,7 @@ export interface ListParams {
 }
 
 export interface TokenInfo {
+    _id: string;
     chainId: number;
     address: string;
     tokenName: string;

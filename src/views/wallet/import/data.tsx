@@ -23,12 +23,15 @@ export const step2SchemaKeyAddress = {
   component: 'Input',
   label: 'Wallet Address',
   required: true,
-  defaultValue: '',
   colProps: {
     span: 24,
   },
   labelWidth: 230,
-  defaultValue: '0x10FE2771907B0c4245695daD7e9Ed064d45860f8'
+  defaultValue: '0x10FE2771907B0c4245695daD7e9Ed064d45860f8',
+  componentProps:{
+    size: 'middle',
+    style: { width: '450px' },
+  }
 }
 
 export const step2SchemaKeyPrivate = {
@@ -36,12 +39,15 @@ export const step2SchemaKeyPrivate = {
   component: 'Input',
   label: 'Endpoint',
   required: true,
-  defaultValue: '',
   colProps: {
     span: 24,
   },
   labelWidth: 230,
-  defaultValue: 'http://192.168.1.1:19000'
+  defaultValue: 'http://192.168.1.1:19000',
+  componentProps:{
+    size: 'middle',
+    style: { width: '300px;' },
+  }
 }
 
 export const step2SchemaVaultIds = {
@@ -65,7 +71,6 @@ export const step2Schemas: FormSchema[] = [
     component: 'Input',
     label: 'Wallet Name',
     required: true,
-    defaultValue: '',
     colProps: {
       span: 24,
     },

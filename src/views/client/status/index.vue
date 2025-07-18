@@ -11,7 +11,7 @@
       <a-list>
         <a-row :gutter="16">
           <template v-for="item in pageList" :key="item.title">
-            <a-col :span="6">
+            <a-col :span="24">
               <a-list-item>
                 <a-card :hoverable="true" :class="`${prefixCls}__card`" @click="showInfo(item)">
                   <div :class="`${prefixCls}__card-title`">
@@ -24,6 +24,11 @@
                   <div :class="`${prefixCls}__card-detail`">
                     {{ item.clientInfo.deployment.image }}
                   </div>
+                  <div :class="`${prefixCls}__card-detail rpc-section`" v-if="item.rpc && item.rpc !== ''">
+                    <Icon icon="fa-solid:network-wired" class="rpc-icon" /> 
+                    <span class="rpc-label">Env RPC:</span> 
+                    <a :href="item.rpc" target="_blank" class="rpc-link">{{ item.rpc }}</a>
+                  </div>     
                 </a-card>
               </a-list-item>
             </a-col>
@@ -37,7 +42,6 @@
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
   import Icon from '/@/components/Icon/index';
-  import { cardList } from './data';
   import { PageWrapper } from '/@/components/Page';
   import { Card, Row, Col, List } from 'ant-design-vue';
   import { list } from '/@/api/lpnode/base';
@@ -49,17 +53,17 @@
     components: {
       Icon,
       PageWrapper,
-      [Card.name]: Card,
-      [List.name]: List,
-      [List.Item.name]: List.Item,
-      [Row.name]: Row,
-      [Col.name]: Col,
+      [String(Card.name)]: Card,
+      [String(List.name)]: List,
+      [String(List.Item.name)]: List.Item,
+      [String(Row.name)]: Row,
+      [String(Col.name)]: Col,
       Info
     },
     setup() {
 
       const choosed = ref(undefined)
-      const pageList = ref([])
+      const pageList :any= ref([])
       const [register, { openDrawer: openInfo }] = useDrawer();
       const showInfo = (data) => {
         // clientInfo.value = data
@@ -74,18 +78,23 @@
         console.log('resp:')
         console.log(resp)
 
-        let newList = []
+        let newList :any[]= []
         resp.forEach(element => {
-          let iconName =  element.name == 'bsc' ? 'mingcute:bnb-line' :
-                          element.name == 'avax' ? 'mingcute:avalanche-avax-line' :
-                          element.name == 'xrp' ? 'simple-icons:xrp' :
-                          element.name == 'near' ? '' : '' ;
+          let iconName = element.name == 'bsc' ? 'token-branded:bscpad' :
+               element.name == 'avax' ? 'token-branded:avax' :
+               element.name == 'xrp' ? 'cryptocurrency:xrp' :
+               element.name == 'near' ? 'cryptocurrency:near' :
+               element.name == 'eth' ? 'token-branded:eth' :
+               element.name == 'op' ? 'token-branded:optimism' :
+               element.name == 'solana' ? 'token-branded:solana' : 
+               element.name == 'polygon' ? 'token-branded:polygon' : '';
           let clientInfo = JSON.parse(element.installContext)     
 
           newList.push({
             title: `${element.name.toUpperCase()} Chain Client` ,
             icon: iconName,
             color: '#1890ff',
+            rpc: element.rpc,
             clientInfo,
             name: element.name
           })
@@ -123,29 +132,66 @@
     &__card {
       width: 100%;
       margin-bottom: -8px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
 
       .ant-card-body {
         padding: 16px;
       }
 
       &-title {
-        margin-bottom: 5px;
-        font-size: 16px;
-        font-weight: 500;
+        margin-bottom: 8px;
+        font-size: 18px;
+        font-weight: 600;
         color: @text-color;
+        display: flex;
+        align-items: center;
 
         .icon {
-          margin-top: -5px;
-          margin-right: 10px;
-          font-size: 38px !important;
+          margin-right: 12px;
+          font-size: 28px !important;
         }
       }
 
       &-detail {
-        padding-top: 10px;
+        padding-top: 8px;
         padding-left: 30px;
         font-size: 14px;
         color: @text-color-secondary;
+        line-height: 1.6;
+        
+        &.rpc-section {
+          display: flex;
+          align-items: center;
+          margin-top: 4px;
+          padding-top: 10px;
+          border-top: 1px dashed #e8e8e8;
+        }
+        
+        .rpc-icon {
+          color: #1890ff;
+          font-size: 16px;
+          margin-right: 8px;
+        }
+        
+        .rpc-label {
+          color: #1890ff;
+          font-weight: 500;
+          margin-right: 6px;
+        }
+        
+        .rpc-link {
+          color: #1890ff;
+          text-decoration: underline;
+          word-break: break-all;
+          
+          &:hover {
+            color: #40a9ff;
+          }
+        }
       }
     }
   }

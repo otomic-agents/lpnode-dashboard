@@ -24,7 +24,8 @@ export interface CreateModel {
 }
 
 export interface DeleteParams {
-    _id: string;
+    id?:string;
+    _id?: string;
 }
 
 export interface DeleteModel {

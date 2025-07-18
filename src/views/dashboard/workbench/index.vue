@@ -2,546 +2,644 @@
   <PageWrapper :class="prefixCls" title="Business">
     <template #headerContent>
       <div :class="`${prefixCls}__link`">
-        <a @click="changeType('executing')"
-          ><Icon icon="mdi:clipboard-text-history" color="#1890ff" /><span>Executing</span></a
-        >
-        |
-        <a @click="changeType('history')"
-          ><Icon icon="material-symbols:work-history" color="#1890ff" /><span>History</span></a
-        >
+        <a @click="changeType('history', '')">
+          <Icon icon="material-symbols:work-history" color="#1890ff" /><span>History</span>
+        </a>
         |
         <template v-for="item in ammList" :key="item">
-          <a @click="changeType('amm', item)"
-            ><Icon icon="icon-park:history-query" color="#1890ff" /><span
-              >{{ item }} History</span
-            ></a
-          >
+          <a @click="changeType('amm', item)">
+            <Icon icon="icon-park:history-query" color="#1890ff" /><span>{{ item }} History</span>
+          </a>
           |
         </template>
       </div>
     </template>
-    <div :class="`${prefixCls}__top`">
-      <a-row :gutter="12">
-        <a-col :span="8" :class="`${prefixCls}__top-col`">
-          <div>Executing</div>
-          <p>{{ executingNum }} jobs</p>
-        </a-col>
-        <a-col :span="8" :class="`${prefixCls}__top-col`">
-          <div>Failed</div>
-          <p>{{ failedNum }}</p>
-        </a-col>
-        <a-col :span="8" :class="`${prefixCls}__top-col`">
-          <div>Succeed</div>
-          <p>{{ succeedNum }}</p>
-        </a-col>
-      </a-row>
-    </div>
 
     <div :class="`${prefixCls}__content`">
       <a-list :pagination="pagination" :data-source="showData">
         <template #renderItem="{ item }">
-          <div :gutter="24" v-if="item.type == 'business'">
-            <a-row :gutter="24">
-              <a-card :hoverable="true" :class="`${prefixCls}__card`">
-                <div :class="`${prefixCls}__card-title`"
-                  >{{ item.src_chain }} - {{ item.dst_chain }}&nbsp;&nbsp;{{ item.src_token_name }}
-                  -
-                  {{ item.dst_token_name }}
+          <a-list-item>
+            <a-card :hoverable="true" :class="`${prefixCls}__card`">
+              <template v-if="item.type === 'business'">
+                <div :class="`${prefixCls}__card-title`">
+                  <div class="chain-info">
+                    <div class="chain-pair">
+                      <img :src="ChainLogos[item.source_chain] || DEFAULT_CHAIN_LOGO" class="chain-logo" />
+                      <span>{{ item.source_chain }}</span>
+                      <Icon icon="material-symbols:arrow-right-alt" />
+                      <img :src="ChainLogos[item.destination_chain] || DEFAULT_CHAIN_LOGO" class="chain-logo" />
+                      <span>{{ item.destination_chain }}</span>
+                    </div>
+                  </div>
+                  <span :style="{ color: item.status === 'Success' ? '#52c41a' : '#f5222d' }">
+                    {{ item.status }}
+                  </span>
                 </div>
-                <Icon class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" />
                 <div :class="`${prefixCls}__card-detail`">
-                  <a-row :gutter="24"
-                    ><a-col :span="12">
-                      <span
-                        >Quote info price: {{ item.price }} Time :{{ item.quote_timestamp }}</span
-                      ></a-col
-                    ><a-col :span="8"></a-col
-                  ></a-row>
                   <a-row :gutter="24">
-                    <a-col :span="12">
-                      <!-- <span>Token info:{{ item.src_token }}-{{ item.dst_token }}</span
-                    ><br /> -->
-                      <span>Received: {{ item.src_token_name }} {{ item.receiver_amount }} </span
-                      ><br />
-                      <span>Pay: {{ item.dst_token_name }} {{ item.payment_amount }}</span
-                      ><br />
-                      <span
-                        >Pay: {{ item.dst_chain_native_token_name }}
-                        {{ item.payment_native_amount }}</span
-                      ><br />
-                      <span>Received wallet: {{ item.receiver_wallet }}</span
-                      ><br />
-                      <span>Pay wallet: {{ item.payment_wallet }}</span
-                      ><br />
-                    </a-col>
-                    <a-col :span="8">
-                      <span
-                        >User transfer in:
-                        <a :href="item.tx_out_link" target="_blank">{{ item.tx_out }}</a> </span
-                      ><br />
-                      <span
-                        >LP transfer in:
-                        <a :href="item.tx_in_link" target="_blank">{{ item.tx_in }}</a></span
-                      ><br />
-                      <span
-                        >User transfer in confirmation:
-                        <a :href="item.tx_out_cfm_link" target="_blank">{{
-                          item.tx_out_cfm
-                        }}</a></span
-                      ><br />
-                      <span
-                        >LP transfer in confirmation:
-                        <a :href="item.tx_in_cfm_link" target="_blank">{{
-                          item.tx_in_cfm
-                        }}</a> </span
-                      ><br />
-                      <span>User refund: {{ item.tx_out_rfd }}</span
-                      ><br />
-                      <span>Lp refund: {{ item.tx_in_rfd }}</span
-                      ><br />
+                    <a-col :span="24">
+                      <div class="detail-item">
+                        <span class="label">Transaction ID:</span>
+                        <span class="value">{{ item.transaction_id }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Time:</span>
+                        <span class="value">{{ item.transaction_time }}</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="label">Trade Status:</span>
+                        <span class="value">{{ item.trade_status }}</span>
+                      </div>
+                      <template v-if="item.received && item.received.length">
+                        <div class="detail-item">
+                          <span class="label">Received:</span>
+                          <span class="value">
+                            <template v-for="(rec, index) in item.received" :key="index">
+                              <span class="token-text">{{ rec.amount }} {{ rec.symbol }}</span>
+                            </template>
+                          </span>
+                        </div>
+                      </template>
+                      <template v-if="item.pay && item.pay.length">
+                        <div class="detail-item">
+                          <span class="label">Pay:</span>
+                          <span class="value">
+                            <template v-for="(pay, index) in item.pay" :key="index">
+                              <span class="token-text">{{ pay.amount }} {{ pay.symbol }}</span>
+                            </template>
+                          </span>
+                        </div>
+                      </template>
+                      <template v-if="item.gas_fee && item.gas_fee.length">
+                        <div class="detail-item">
+                          <span class="label">Gas Fee:</span>
+                          <span class="value">
+                            <template v-for="(gas, index) in item.gas_fee" :key="index">
+                              {{ gas.amount }} {{ gas.symbol }} (${{ gas.usd }})
+                            </template>
+                          </span>
+                        </div>
+                      </template>
+                      <template v-if="item.total_changes && item.total_changes.length">
+                        <div class="detail-item">
+                          <span class="label">Total Changes:</span>
+                          <span class="value">
+                            <template v-for="(change, _) in item.total_changes" :key="index">
+                              <span class="token-text" :style="{
+                                color: change.amount > 0 ? '#52c41a' : '#f5222d',
+                                marginRight: '10px'
+                              }">
+                                {{ change.amount > 0 ? '+' : '' }}{{ Number(change.amount).toFixed(8) }} {{
+                                  change.symbol }}
+                                <template v-if="change.usd">
+                                  (${{ change.usd }})
+                                </template>
+                              </span>
+                            </template>
+                          </span>
+                        </div>
+                      </template>
+                      <template v-if="item.chain_transactions && item.chain_transactions.length">
+                        <div class="detail-item transactions-container">
+                          <span class="label">Chain Transactions:</span>
+                          <div class="value transactions-list">
+                            <div class="transactions-wrapper">
+                              <template v-for="(tx, index) in item.chain_transactions" :key="index">
+                                <div class="transaction-item" :class="getTransactionClass(tx.event_name)">
+                                  <div class="transaction-header">
+                                    <span class="event-name">{{ tx.event_name }}</span>
+                                    <span class="chain-name">{{ tx.chain_name }}</span>
+                                  </div>
+                                  <div class="transaction-hash">
+                                    <a :href="tx.explorer_url" target="_blank" class="hash-link">
+                                      <span class="hash-text">{{ formatTxHash(tx.tx_hash) }}</span>
+                                      <Icon icon="material-symbols:open-in-new" class="external-link-icon" />
+                                    </a>
+                                  </div>
+                                  <div class="transaction-time">
+                                    {{ formatTimestamp(tx.timestamp) }}
+                                  </div>
+                                </div>
+                                <div v-if="index !== item.chain_transactions.length - 1" class="transaction-arrow">
+                                  <Icon icon="material-symbols:arrow-right-alt" />
+                                </div>
+                              </template>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
                     </a-col>
                   </a-row>
                 </div>
-              </a-card>
-            </a-row>
-          </div>
-          <div :gutter="24" v-if="item.type == 'amm'">
-            <a-card :hoverable="true" :class="`${prefixCls}__card`">
-              <div :class="`${prefixCls}__card-title`">{{ item.market }} </div>
-              <!-- <Icon class="icon" icon="material-symbols:work-history" /> -->
+              </template>
 
-              <span> Market: {{ item.market }}</span
-              ><br />
-              <span>quote Time: {{ item.quoteTime }}</span
-              ><br />
-              <span>swapAmount: {{ item.swapAmount }}</span
-              ><br />
-              <span>hedgeEnabled: {{ item.hedgeEnabled }}</span
-              ><br />
-              <span>capacity: {{ item.capacity }} </span><br />
-              <span>orig price: {{ item.origPrice }} </span><br />
-              <span>price: {{ item.price }} </span><br />
-              <span>capacity: {{ item.capacity }} </span><br />
-              <span>native price: {{ item.nativePrice }}</span
-              ><br />
+              <template v-if="item.type === 'amm'">
+                <div :class="`${prefixCls}__card-title`">{{ item.market }}</div>
+                <div :class="`${prefixCls}__card-detail`">
+                  <div class="detail-item">
+                    <span class="label">Market:</span>
+                    <span class="value">{{ item.market }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Quote Time:</span>
+                    <span class="value">{{ item.quoteTime }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Swap Amount:</span>
+                    <span class="value">{{ item.swapAmount }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Hedge Enabled:</span>
+                    <span class="value">{{ item.hedgeEnabled }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Capacity:</span>
+                    <span class="value">{{ item.capacity }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Original Price:</span>
+                    <span class="value">{{ item.origPrice }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Price:</span>
+                    <span class="value">{{ item.price }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Native Price:</span>
+                    <span class="value">{{ item.nativePrice }}</span>
+                  </div>
+                </div>
+              </template>
             </a-card>
-          </div>
+          </a-list-item>
         </template>
       </a-list>
     </div>
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { Progress, Row, Col, Card } from 'ant-design-vue';
-  import { defineComponent, ref } from 'vue';
-  import Icon from '/@/components/Icon/index';
-  import { cardList } from './data';
-  import { PageWrapper } from '/@/components/Page';
-  import { List } from 'ant-design-vue';
-  import { businessHistory, ammHistory } from '/@/api/lpnode/business';
-  import { getChainName } from '/@/obridge/utils';
-  import { list } from '/@/api/lpnode/base';
-  import _ from 'lodash';
+import { Row as RowType, Col as ColType, Card as CardType, Progress as ProgressType, List as ListType } from 'ant-design-vue';
 
-  export default defineComponent({
-    components: {
-      Icon,
-      Progress,
-      PageWrapper,
-      [Card.name]: Card,
-      [List.name]: List,
-      [List.Item.name]: List.Item,
-      AListItemMeta: List.Item.Meta,
-      [Row.name]: Row,
-      [Col.name]: Col,
-    },
-    setup() {
-      const executingNum = ref(0);
-      const failedNum = ref(0);
-      const succeedNum = ref(0);
-      const showData = ref([]);
-      const ammList = ref([]);
-      let historyType = 'executing';
-      let pageNow = 1;
-      let choosedAmm = '';
+const Progress: any = ProgressType;
+const Row: any = RowType;
+const Col: any = ColType;
+const Card: any = CardType;
+const List: any = ListType;
+import { ChainLogos, DEFAULT_CHAIN_LOGO } from '/@/assets/chainLogos';
+import { defineComponent, ref } from 'vue';
+import Icon from '/@/components/Icon/index';
+import { PageWrapper } from '/@/components/Page';
+import { businessHistory, ammHistory } from '/@/api/lpnode/business';
+//@ts-ignore
+import { getChainName } from '/@/obridge/utils';
+import { list } from '/@/api/lpnode/base';
+import _ from 'lodash';
+export default defineComponent({
+  components: {
+    Icon,
+    Progress,
+    PageWrapper,
+    [Card.name]: Card,
+    [List.name]: List,
+    [List.Item.name]: List.Item,
+    AListItemMeta: List.Item.Meta,
+    [Row.name]: Row,
+    [Col.name]: Col,
+  },
+  setup() {
+    const formatTxHash = (hash: string) => {
+      if (!hash) return '';
+      return `${hash.slice(0, 6)}...${hash.slice(-4)}`;
+    };
+    const getTransactionClass = (eventName: string) => {
+      switch (eventName) {
+        case 'TransferOut':
+          return 'transfer-out';
+        case 'TransferOutConfirm':
+          return 'transfer-out-confirm';
+        case 'TransferIn':
+          return 'transfer-in';
+        case 'TransferInConfirm':
+          return 'transfer-in-confirm';
+        case 'TransferInRefund':
+          return 'transfer-refund';
 
-      const getAmm = async () => {
-        let ammResp = await list({
-          installType: 'amm',
-        });
-        let newArr = [];
-        ammResp.forEach((element) => {
-          newArr.push(element.name);
-        });
-        ammList.value = newArr;
-      };
-      getAmm();
 
-      const getDataAmm = async () => {
-        let resp = await ammHistory({
-          status: 1,
-          page: pageNow,
-          pageSize: 5,
-          ammName: choosedAmm,
-        });
-        console.log('resp:');
-        console.log(resp);
-
-        let newArr = [];
-        while (resp.pageCount * 5 > newArr.length) {
-          newArr.push({});
-        }
-
-        let i = (pageNow - 1) * 5;
-        for (let obj of resp.list) {
-          newArr[i] = {
-            type: 'amm',
-            market: obj.quoteInfo.assetName,
-            capacity: obj.quoteInfo.capacity_num,
-            nativeMarket: obj.quoteInfo.native_token_symbol,
-            quoteTimestamp: obj.quoteInfo.timestamp,
-            quoteTime: (() => {
-              return new Date(obj.quoteInfo.timestamp).toLocaleString();
-            })(),
-            hedgeEnabled: (() => {
-              if (obj.hedgeEnabled == false) {
-                return 'no';
-              } else {
-                return 'yes';
-              }
-            })(),
-            gas: obj.quoteInfo.gas,
-            nativePrice: obj.quoteInfo.native_token_price,
-            price: obj.quoteInfo.price,
-            origPrice: obj.quoteInfo.origPrice,
-            swapAmount: obj.SwapInfo.inputAmount,
-          };
-          i++;
-        }
-        showData.value = newArr;
-        console.log(newArr);
-      };
-
-      const getDataBusiness = async () => {
-        let resp = await businessHistory({
-          status: historyType == 'executing' ? 1 : 2,
-          page: pageNow,
-          pageSize: 5,
-        });
-        console.log('resp:');
-        console.log(resp);
-
-        let newArr = [];
-        while (resp.pageCount * 5 > newArr.length) {
-          newArr.push({});
-        }
-
-        let i = (pageNow - 1) * 5;
-        for (let obj of resp.list) {
-          let txOut = obj.event_transfer_out == null ? null : obj.event_transfer_out.transfer_id;
-          let txOutInfo =
-            obj.event_transfer_out == null ? null : obj.event_transfer_out.transfer_info;
-          let txIn = obj.event_transfer_in == null ? null : obj.event_transfer_in.transfer_id;
-          let txInInfo = obj.event_transfer_in == null ? null : obj.event_transfer_in.transfer_info;
-          let txOutCfm =
-            obj.event_transfer_out_confirm == null
-              ? null
-              : obj.event_transfer_out_confirm.transfer_id;
-          let txOutCfmInfo =
-            obj.event_transfer_out_confirm == null
-              ? null
-              : obj.event_transfer_out_confirm.transfer_info;
-          let txInCfm =
-            obj.event_transfer_in_confirm == null
-              ? null
-              : obj.event_transfer_in_confirm.transfer_id;
-          let txInCfmInfo =
-            obj.event_transfer_in_confirm == null
-              ? null
-              : obj.event_transfer_in_confirm.transfer_info;
-          let txOutRfd =
-            obj.event_transfer_out_refund == null ? '' : obj.event_transfer_out_refund.transfer_id;
-          let txOutRfdInfo =
-            obj.event_transfer_out_refund == null
-              ? ''
-              : obj.event_transfer_out_refund.transfer_info;
-          let txInRfd =
-            obj.event_transfer_in_refund == null ? '' : obj.event_transfer_in_refund.transfer_id;
-          let txInRfdInfo =
-            obj.event_transfer_in_refund == null ? '' : obj.event_transfer_in_refund.transfer_info;
-          newArr[i] = {
-            type: 'business',
-            src_chain: getChainName(
-              obj.pre_business.swap_asset_information.quote.quote_base.bridge.src_chain_id,
-            ),
-            dst_chain: getChainName(
-              obj.pre_business.swap_asset_information.quote.quote_base.bridge.dst_chain_id,
-            ),
-            src_token: obj.pre_business.swap_asset_information.quote.quote_base.bridge.src_token,
-            dst_token: obj.pre_business.swap_asset_information.quote.quote_base.bridge.dst_token,
-            quote_timestamp: (() => {
-              if (obj.ViewInfo.quoteTimestamp) {
-                return new Date(obj.ViewInfo.quoteTimestamp).toLocaleString();
-              }
-              return '';
-            })(),
-            src_token_name: obj.ViewInfo.srcTokenName,
-            dst_token_name: obj.ViewInfo.dstTokenName,
-            dst_chain_native_token_name: obj.ViewInfo.DstChainNativeTokenName,
-            receiver_amount: obj.ViewInfo.receiverAmount,
-            payment_amount: obj.ViewInfo.paymentAmount,
-            src_chain_name: obj.ViewInfo.srcChainName,
-            dst_chain_name: obj.ViewInfo.dstChainName,
-            payment_wallet: obj.ViewInfo.paymentWallet,
-            receiver_wallet: obj.ViewInfo.receiverWallet,
-            payment_native_amount: obj.ViewInfo.paymentNativeAmount,
-
-            price: obj.pre_business.swap_asset_information.quote.quote_base.price,
-            src_amount: obj.pre_business.swap_asset_information.amount,
-            dst_amount: obj.pre_business.swap_asset_information.dst_amount,
-            tx_out: (() => {
-              return `${txOut.substr(0, 6)}...${txOut.substr(txOut.length - 6, 6)}`;
-            })(),
-            tx_out_link: (() => {
-              try {
-                const txView = JSON.parse(txOutInfo);
-                const txHash = _.get(txView, 'transactionHash', '');
-                return obj.ViewInfo.srcChainRpcTx.replace('{tx}', txHash);
-              } catch (e) {
-                return '';
-              }
-            })(),
-            tx_in:
-              txIn == null ? 'null' : `${txIn.substr(0, 6)}...${txIn.substr(txIn.length - 6, 6)}`,
-            tx_in_link: (() => {
-              try {
-                const txView = JSON.parse(txInInfo);
-                const txHash = _.get(txView, 'transactionHash', '');
-                return obj.ViewInfo.dstChainRpcTx.replace('{tx}', txHash);
-              } catch (e) {
-                return '';
-              }
-            })(),
-            tx_out_cfm:
-              txOutCfm == null
-                ? 'null'
-                : `${txOutCfm.substr(0, 6)}...${txOutCfm.substr(txOutCfm.length - 6, 6)}`,
-            tx_out_cfm_link: (() => {
-              try {
-                const txView = JSON.parse(txOutCfmInfo);
-                const txHash = _.get(txView, 'transactionHash', '');
-                return obj.ViewInfo.srcChainRpcTx.replace('{tx}', txHash);
-              } catch (e) {
-                return '';
-              }
-            })(),
-            tx_in_cfm:
-              txInCfm == null
-                ? 'null'
-                : `${txInCfm.substr(0, 6)}...${txInCfm.substr(txInCfm.length - 6, 6)}`,
-            tx_in_cfm_link: (() => {
-              try {
-                const txView = JSON.parse(txInCfmInfo);
-                const txHash = _.get(txView, 'transactionHash', '');
-                return obj.ViewInfo.dstChainRpcTx.replace('{tx}', txHash);
-              } catch (e) {
-                return '';
-              }
-            })(),
-            tx_out_rfd:
-              txOutRfd == null
-                ? 'null'
-                : `${txOutRfd.substr(0, 6)}...${txOutRfd.substr(txOutRfd.length - 6, 6)}`,
-            tx_out_rfd_link: (() => {
-              try {
-                const txView = JSON.parse(txOutRfdInfo);
-                const txHash = _.get(txView, 'transactionHash', '');
-                return obj.ViewInfo.dstChainRpcTx.replace('{tx}', txHash);
-              } catch (e) {
-                return '';
-              }
-            })(),
-            tx_in_rfd:
-              txInRfd == null
-                ? 'null'
-                : `${txInRfd.substr(0, 6)}...${txInRfd.substr(txInRfd.length - 6, 6)}`,
-            tx_in_rfd_link: (() => {
-              try {
-                const txView = JSON.parse(txInRfdInfo);
-                const txHash = _.get(txView, 'transactionHash', '');
-                return obj.ViewInfo.dstChainRpcTx.replace('{tx}', txHash);
-              } catch (e) {
-                return '';
-              }
-            })(),
-          };
-          i++;
-        }
-        showData.value = newArr;
-      };
-
-      const getDate = async () => {
-        if (historyType == 'amm') {
-          getDataAmm();
-        } else {
-          getDataBusiness();
-        }
-      };
-      getDate();
-
-      const changeType = async (type, name) => {
-        choosedAmm = name;
-        historyType = type;
-        pageNow = 1;
+        case 'InitSwap':
+          return 'init-swap';
+        case 'ConfirmSwap':
+          return 'confirm-swap';
+        case 'RefundSwap':
+          return 'refund-swap';
+        default:
+          return '';
+      }
+    };
+    const formatTimestamp = (timestamp: number) => {
+      return new Date(timestamp).toLocaleString();
+    };
+    const pagination = ref({
+      show: true,
+      total: 0,
+      current: 1,
+      pageSize: 5,
+      onChange: (page: number) => {
+        pageNow = page;
         getDate();
-      };
+      },
+    });
 
-      return {
-        // prefixCls: 'list-card',
-        executingNum,
-        failedNum,
-        succeedNum,
-        changeType,
-        ammList,
+    const showData = ref<any[]>([]);
+    const ammList = ref<string[]>([]);
+    let historyType = 'executing';
+    let pageNow = 1;
+    let choosedAmm = '';
 
-        prefixCls: 'list-basic',
-        showData,
-        pagination: {
-          show: true,
-          onChange: (page: number) => {
-            console.log(page);
-            pageNow = page;
+    const getAmm = async () => {
+      let ammResp = await list({
+        installType: 'amm',
+      });
+      let newArr: string[] = [];
+      ammResp.forEach((element) => {
+        newArr.push(element.name);
+      });
+      ammList.value = newArr;
+    };
+    getAmm();
 
-            if (historyType != 'executing') {
-              getDate();
-            }
-          },
+    const getDataAmm = async () => {
+      let resp: any = await ammHistory({
+        status: 1,
+        page: pageNow,
+        pageSize: 5,
+        ammName: choosedAmm,
+      });
+      console.log('resp:', resp);
+
+      if (resp.list && _.isArray(resp.list)) {
+        const newArr = resp.list.map((obj) => ({
+          type: 'amm',
+          market: obj.quoteInfo.assetName,
+          capacity: obj.quoteInfo.capacity_num,
+          nativeMarket: obj.quoteInfo.native_token_symbol,
+          quoteTimestamp: obj.quoteInfo.timestamp,
+          quoteTime: new Date(obj.quoteInfo.timestamp).toLocaleString(),
+          hedgeEnabled: obj.hedgeEnabled === false ? 'no' : 'yes',
+          gas: obj.quoteInfo.gas,
+          nativePrice: obj.quoteInfo.native_token_price,
+          price: obj.quoteInfo.price,
+          origPrice: obj.quoteInfo.origPrice,
+          swapAmount: obj.SwapInfo.inputAmount,
+        }));
+
+        showData.value = newArr;
+
+
+        pagination.value = {
+          ...pagination.value,
+          total: resp.pageCount * 5,
+          current: pageNow,
           pageSize: 5,
-        },
-      };
-    },
-  });
+          onChange: (page: number) => {
+            pageNow = page;
+            getDate();
+          },
+        };
+      } else {
+
+        showData.value = [];
+        pagination.value = {
+          ...pagination.value,
+          total: 0,
+          current: 1,
+        };
+      }
+    };
+
+    const getDataBusiness = async () => {
+      let resp: any = await businessHistory({
+        status: 2,
+        page: pageNow,
+        pageSize: 5,
+      });
+
+      console.log("getDataBusiness:");
+      console.log(JSON.stringify(resp));
+
+      if (resp.list && _.isArray(resp.list)) {
+        const newArr = await Promise.all(resp.list.map(async (obj) => {
+          return {
+            type: 'business',
+            transaction_id: obj.transaction_id,
+            transaction_time: obj.transaction_time,
+            status: obj.status,
+            trade_status: obj.trade_status,
+            source_chain: obj.source_chain,
+            destination_chain: obj.destination_chain,
+            received: obj.received,
+            pay: obj.pay,
+            gas_fee: obj.gas_fee,
+            chain_transactions: obj.chain_transactions,
+            total_changes: obj.total_changes,
+          };
+        }));
+
+        showData.value = newArr;
+
+        pagination.value = {
+          ...pagination.value,
+          total: resp.pageCount * 5,
+          current: pageNow,
+          pageSize: 5,
+          onChange: (page: number) => {
+            pageNow = page;
+            getDate();
+          },
+        };
+      }
+    };
+
+    const getDate = async () => {
+      if (historyType == 'amm') {
+        getDataAmm();
+      } else {
+        getDataBusiness();
+      }
+    };
+    getDate();
+
+    const changeType = async (type, name) => {
+      choosedAmm = name;
+      historyType = type;
+      pageNow = 1;
+      getDate();
+    };
+
+    return {
+      changeType,
+      ammList,
+      ChainLogos,
+      DEFAULT_CHAIN_LOGO,
+      prefixCls: 'list-basic',
+      showData,
+      pagination,
+      formatTxHash,
+      formatTimestamp,
+      getTransactionClass,
+    };
+  },
+});
 </script>
 <style lang="less" scoped>
-  .list-basic {
-    &__link {
-      margin-top: 10px;
-      font-size: 14px;
+.list-basic {
+  &__link {
+    margin-top: 10px;
+    font-size: 14px;
 
-      a {
-        margin-right: 30px;
-      }
-
-      span {
-        margin-left: 5px;
-      }
+    a {
+      margin-right: 30px;
     }
 
-    &__card {
-      width: 100%;
-      margin-bottom: 15px;
-
-      .ant-card-body {
-        padding: 16px;
-      }
-
-      &-title {
-        margin-bottom: 5px;
-        font-size: 16px;
-        font-weight: 500;
-        color: @text-color;
-
-        .icon {
-          margin-top: -5px;
-          margin-right: 10px;
-          font-size: 38px !important;
-        }
-      }
-
-      &-detail {
-        padding-top: 10px;
-        padding-left: 30px;
-        font-size: 14px;
-        color: @text-color-secondary;
-        span {
-          line-height: 30px;
-          color: black;
-        }
-      }
+    span {
+      margin-left: 5px;
     }
-    &__top {
-      padding: 24px;
-      text-align: center;
-      background-color: @component-background;
+  }
 
-      &-col {
-        &:not(:last-child) {
-          border-right: 1px dashed @border-color-base;
+  &__card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+
+    .chain-info {
+      .chain-pair {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .chain-logo {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
         }
-
-        div {
-          margin-bottom: 12px;
-          font-size: 14px;
-          line-height: 22px;
-          color: @text-color;
-        }
-
-        p {
-          margin: 0;
-          font-size: 24px;
-          line-height: 32px;
-          color: @text-color;
-        }
-      }
-    }
-
-    &__content {
-      padding: 24px;
-      margin-top: 12px;
-      background-color: @component-background;
-
-      .list {
-        position: relative;
-      }
-
-      .icon {
-        font-size: 40px !important;
-      }
-
-      .extra {
-        position: absolute;
-        top: 20px;
-        right: 15px;
-        font-weight: normal;
-        color: @primary-color;
-        cursor: pointer;
-      }
-
-      .description {
-        display: inline-block;
-        width: 40%;
-      }
-
-      .info {
-        display: inline-block;
-        width: 30%;
-        text-align: center;
-
-        div {
-          display: inline-block;
-          padding: 0 20px;
-
-          span {
-            display: block;
-          }
-        }
-      }
-
-      .progress {
-        display: inline-block;
-        width: 15%;
-        vertical-align: top;
       }
     }
   }
+
+  &__card {
+    width: 100%;
+    margin-bottom: 15px;
+
+    .ant-card-body {
+      padding: 16px;
+    }
+
+    &-title {
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    &-detail {
+      padding-top: 10px;
+      padding-left: 30px;
+      font-size: 14px;
+
+      .detail-item {
+        &:last-child {
+          margin-bottom: 0;
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+
+        margin-bottom: 10px;
+        line-height: 1.6;
+        display: flex; 
+        align-items: center; 
+
+        .label {
+          font-weight: 500;
+          color: #666;
+          margin-right: 8px;
+          min-width: 100px;
+        }
+
+        .value {
+          color: #333;
+          display: flex; 
+          align-items: center; 
+          flex-wrap: wrap; 
+          gap: 8px; 
+        }
+      }
+    }
+  }
+
+  &__content {
+    padding: 24px;
+    margin-top: 12px;
+    background-color: #fff;
+  }
+}
+
+.token-logo {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.token-text {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.02);
+  margin-right: 8px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.transactions-container {
+  .transactions-list {
+    width: 100%;
+    overflow-x: auto;
+    padding: 8px 0;
+
+    .transactions-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px;
+    }
+  }
+
+  .transaction-item {
+    flex: 0 0 auto;
+    min-width: 280px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #e9ecef;
+
+    &.transfer-out {
+      border-left-color: #40a9ff;
+      background-color: #e6f7ff;
+    }
+
+    &.transfer-out-confirm {
+      border-left-color: #1890ff;
+      background-color: #f0f5ff;
+    }
+
+    &.transfer-in {
+      border-left-color: #52c41a;
+      background-color: #f6ffed;
+    }
+
+    &.transfer-in-confirm {
+      border-left-color: #389e0d;
+      background-color: #f0f9eb;
+    }
+
+    &.transfer-refund {
+      border-left-color: #faad14;
+      background-color: #fff7e6;
+    }
+
+    &.init-swap {
+      border-left-color: #722ed1;
+      background-color: #f9f0ff;
+    }
+
+    &.confirm-swap {
+      border-left-color: #13c2c2;
+      background-color: #e6fffb;
+    }
+
+    &.refund-swap {
+      border-left-color: #f5222d;
+      background-color: #fff1f0;
+    }
+
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+
+      .event-name {
+        font-weight: 500;
+        color: #1f1f1f;
+      }
+
+      .chain-name {
+        color: #666;
+        font-size: 0.9em;
+        background: rgba(0, 0, 0, 0.06);
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+    }
+
+    .transaction-hash {
+      margin-bottom: 4px;
+
+      .hash-link {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #1890ff;
+
+        &:hover {
+          color: #40a9ff;
+        }
+
+        .hash-text {
+          font-family: monospace;
+        }
+
+        .external-link-icon {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .transaction-time {
+      font-size: 0.9em;
+      color: #8c8c8c;
+    }
+  }
+
+  .transaction-arrow {
+    flex: 0 0 auto;
+    color: #8c8c8c;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.transactions-list {
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f0f2f5;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+
+    &:hover {
+      background: #999;
+    }
+  }
+}
 </style>

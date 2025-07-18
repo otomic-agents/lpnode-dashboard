@@ -1,7 +1,7 @@
 import { lpHttp } from '/@/utils/http/axios';
 
 import {
-    ListModel, ListParams,
+    ListModel, ListParams,DeploayItem,
     UpdateParams, UpdateModel,
     ChainlistParams, ChainlistModel,
     RestartParams, RestartModel,
@@ -19,6 +19,9 @@ enum Api {
 }
 
 export const list = (data: ListParams) => lpHttp.post<ListModel>({ url: Api.LIST, data });
+
+
+export const listAmm = (data: ListParams) => lpHttp.post<Array<DeploayItem>>({ url: Api.LIST, data });
 
 export const update = (data: UpdateParams) => lpHttp.post<UpdateModel>({ url: Api.UPDATE, data });
 

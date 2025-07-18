@@ -1,12 +1,7 @@
 <template>
   <PageWrapper :class="prefixCls" title="Wallets">
     <template #headerContent>
-      
-      <!-- <div :class="`${prefixCls}__link`">
-        <a><Icon icon="bx:bx-paper-plane" color="#1890ff" /><span>start</span></a>
-        <a><Icon icon="carbon:warning" color="#1890ff" /><span>info</span></a>
-        <a><Icon icon="ion:document-text-outline" color="#1890ff" /><span>doc</span></a>
-      </div> -->
+      <!-- Header content can be added here -->
     </template>
 
     <div :class="`${prefixCls}__content`">
@@ -16,18 +11,22 @@
             <a-col :span="8">
               <a-list-item>
                 <a-card :hoverable="true" :class="`${prefixCls}__card`">
-                  <template #extra><a @click="deleteWalletFn(item)">delete</a></template>
+                  <template #extra>
+                    <a-button type="link" danger @click="showDeleteConfirm(item)">delete</a-button>
+                  </template>
                   <div :class="`${prefixCls}__card-title`">
                     <Icon class="icon" v-if="item.icon" :icon="item.icon" :color="item.color" />
                     {{ item.title }}
-
-                    
+                    <a-tag color="blue" class="ml-2">{{ item.chain }}</a-tag>
                   </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    {{ item.address }}
+                  <div :class="`${prefixCls}__card-address`">
+                    {{ formatAddress(item.address) }}
+                    <a-tooltip :title="item.address">
+                      <CopyOutlined class="copy-icon" @click="copyAddress(item.address)" />
+                    </a-tooltip>
                   </div>
-                  <div :class="`${prefixCls}__card-detail`">
-                    Chain: {{ item.chain }}
+                  <div :class="`${prefixCls}__card-balance`">
+                    Balance: {{ item.balance }} {{ item.chain }}
                   </div>
                   <div :class="`${prefixCls}__card-detail`">
                     Sign Endpoint: {{ item.signServiceEndpoint }}
@@ -43,131 +42,183 @@
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
-  import Icon from '/@/components/Icon/index';
-  import { PageWrapper } from '/@/components/Page';
-  import { Card, Row, Col, List } from 'ant-design-vue';
-  import { list, deleteWallet } from '/@/api/lpnode/wallet';
-  import { WalletInfo, DeleteParams } from '/@/api/lpnode/model/walletModel';
-  import { getChainName } from '/@/obridge/utils';
-  import { useMessage } from '/@/hooks/web/useMessage';
-  import { Loading } from '/@/components/Loading/index';
-  import { useTabs } from '/@/hooks/web/useTabs';
+import { CopyOutlined } from '@ant-design/icons-vue';
+import { Row as RowType, Col as ColType, Card as CardType, Progress as ProgressType, List as ListType, Modal } from 'ant-design-vue';
+import { defineComponent, ref } from 'vue';
+import Icon from '/@/components/Icon/index';
+import { PageWrapper } from '/@/components/Page';
+import { list, deleteWallet } from '/@/api/lpnode/wallet';
+import { WalletInfo, DeleteParams } from '/@/api/lpnode/model/walletModel';
+import { getChainName } from '/@/obridge/utils';
+import { useMessage } from '/@/hooks/web/useMessage';
+import { Loading } from '/@/components/Loading/index';
+import { useTabs } from '/@/hooks/web/useTabs';
 
-  export default defineComponent({
-    components: {
-      Loading,
-      Icon,
-      PageWrapper,
-      [Card.name]: Card,
-      [List.name]: List,
-      [List.Item.name]: List.Item,
-      [Row.name]: Row,
-      [Col.name]: Col,
-    },
-    setup() {
+const Progress: any = ProgressType;
+const Row: any = RowType;
+const Col: any = ColType;
+const Card: any = CardType;
+const List: any = ListType;
 
-      const { createMessage } = useMessage();
-      const isLoading = ref(false);
-      const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } = useTabs();
-      // const loadingProps = computed(() => {
-      //   console.log('on loadingProps')
-      //   return 
-      // });
-      // const { getLoading, setLoading } = useLoading(loadingProps);
+export default defineComponent({
+  components: {
+    Loading,
+    Icon,
+    PageWrapper,
+    CopyOutlined,
+    [Card.name]: Card,
+    [List.name]: List,
+    [List.Item.name]: List.Item,
+    [Row.name]: Row,
+    [Col.name]: Col,
+  },
+  setup() {
+    const formatAddress = (address: string) => {
+      return `${address.slice(0, 12)}...${address.slice(-8)}`;
+    };
 
-      const pageList = ref([])
+    const copyAddress = (address: string) => {
+      navigator.clipboard.writeText(address);
+      createMessage.success('Copied to clipboard');
+    };
 
-      let fetchList = async () => {
-        let resp: Array<WalletInfo> = await list({})
-        console.log('resp:')
-        console.log(resp)
+    const { createMessage, createConfirm } = useMessage();
+    const isLoading = ref(false);
+    const { refreshPage } = useTabs();
+    const pageList: any = ref([]);
 
-        let newList = []
-        resp.forEach(item => {
-          newList.push({
-            title: item.walletName,
-            icon: 'material-symbols:account-balance-wallet-outline',
-            color: '#1890ff',
-            active: '100',
-            address: item.address,
-            signServiceEndpoint:item.signServiceEndpoint,
-            chain: getChainName(item.chainId),
-            id: item.id
-          })
-        })
-        pageList.value = newList
-      }
-      fetchList()
+    // Fetch wallet list
+    const fetchList = async () => {
+      let resp: any = await list({});
+      console.log('📋 Response:', resp);
 
-      const deleteWalletFn = async (wallet) => {
-        // setLoading(true)
-        isLoading.value = true
+      let newList: any[] = [];
+      resp.forEach(item => {
+        newList.push({
+          title: item.walletName,
+          icon: 'material-symbols:account-balance-wallet-outline',
+          color: '#1890ff',
+          active: '100',
+          address: item.address,
+          signServiceEndpoint: item.signServiceEndpoint,
+          chain: getChainName(item.chainId),
+          balance: item.balance,
+          id: item.id
+        });
+      });
+      pageList.value = newList;
+    };
+
+    // Show delete confirmation dialog
+    const showDeleteConfirm = (wallet) => {
+      createConfirm({
+        iconType: 'warning',
+        title: 'Delete Wallet',
+        content: `Are you sure you want to delete wallet "${wallet.title}"?`,
+        okText: 'Yes',
+        cancelText: 'No',
+        onOk: () => deleteWalletFn(wallet),
+      });
+    };
+
+    // Delete wallet function
+    const deleteWalletFn = async (wallet) => {
+      try {
+        isLoading.value = true;
         let params: DeleteParams = {
           id: wallet.id
-        }
-        let resp = await deleteWallet(params)
+        };
+        let resp = await deleteWallet(params);
 
-        if(resp != undefined) {
-          createMessage.success('Delete wallet succeed')
+        if (resp != undefined) {
+          createMessage.success('Wallet deleted successfully');
+          await fetchList(); // Refresh the list after deletion
         }
-        // setLoading(false)
-        isLoading.value = false
-        refreshPage()
+      } catch (error) {
+        createMessage.error('Failed to delete wallet');
+        console.error('🔴 Delete wallet error:', error);
+      } finally {
+        isLoading.value = false;
       }
+    };
 
-      return {
-        // loading,
-        isLoading,
-        prefixCls: 'list-card',
-        list: pageList,
-        deleteWalletFn
-      };
-    },
-  });
+    // Initial fetch
+    fetchList();
+
+    return {
+      formatAddress,
+      copyAddress,
+      isLoading,
+      prefixCls: 'list-card',
+      list: pageList,
+      showDeleteConfirm,
+    };
+  },
+});
 </script>
 <style lang="less" scoped>
-  .list-card {
-    &__link {
-      margin-top: 10px;
-      font-size: 14px;
+.list-card {
+  &__link {
+    margin-top: 10px;
+    font-size: 14px;
 
-      a {
-        margin-right: 30px;
-      }
-
-      span {
-        margin-left: 5px;
-      }
+    a {
+      margin-right: 30px;
     }
 
-    &__card {
-      width: 100%;
-      margin-bottom: -8px;
+    span {
+      margin-left: 5px;
+    }
+  }
+  &__card-address {
+    padding: 12px 0;
+    font-family: monospace;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    color: @text-color;
 
-      .ant-card-body {
-        padding: 16px;
-      }
+    .copy-icon {
+      margin-left: 12px;
+      cursor: pointer;
 
-      &-title {
-        margin-bottom: 5px;
-        font-size: 16px;
-        font-weight: 500;
-        color: @text-color;
-
-        .icon {
-          margin-top: -5px;
-          margin-right: 10px;
-          font-size: 38px !important;
-        }
-      }
-
-      &-detail {
-        padding-top: 10px;
-        padding-left: 30px;
-        font-size: 14px;
-        color: @text-color-secondary;
+      &:hover {
+        color: @primary-color;
       }
     }
   }
+
+  &__card-balance {
+    font-size: 16px;
+    font-weight: 500;
+    color: @success-color;
+    padding: 8px 0;
+  }
+  &__card {
+    width: 100%;
+    margin-bottom: -8px;
+
+    .ant-card-body {
+      padding: 16px;
+    }
+
+    &-title {
+      margin-bottom: 5px;
+      font-size: 16px;
+      font-weight: 500;
+      color: @text-color;
+
+      .icon {
+        margin-top: -5px;
+        margin-right: 10px;
+        font-size: 38px !important;
+      }
+    }
+
+    &-detail {
+      padding-top: 10px;
+      font-size: 14px;
+      color: @text-color-secondary;
+    }
+  }
+}
 </style>
